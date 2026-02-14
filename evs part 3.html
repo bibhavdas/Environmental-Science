@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Types of Ecosystems</title>
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --font-stack: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+            
+            /* --- EDIT HERE FOR TRANSPARENCY --- */
+            /* 0.2 = 20% visible (Very transparent) */
+            /* 0.9 = 90% visible (Solid White) */
+            --card-bg: rgba(255, 255, 255, 0.2); 
+            
+            --card-border: 1px solid rgba(255, 255, 255, 0.8);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            
+            /* The "Liquid/Fish-eye" edge effect */
+            --liquid-shadow: 
+                inset 0 0 20px rgba(255, 255, 255, 0.4), 
+                inset 0 0 5px rgba(255, 255, 255, 0.6),
+                0 15px 35px rgba(0, 0, 0, 0.2);
+            
+            --text-dark: #000000; 
+            --text-heading: #004d40;
+            --text-accent: #d84315;
+        }
+
+        /* --- THEME CONFIGURATIONS --- */
+        body.theme-forest {
+            --header-grad: linear-gradient(135deg, rgba(46, 125, 50, 0.9), rgba(102, 187, 106, 0.9));
+            --accent-color: #2e7d32;
+            --bg-url: url('https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/tropical%20rainforest.gif');
+        }
+
+        body.theme-ocean {
+            --header-grad: linear-gradient(135deg, rgba(2, 119, 189, 0.9), rgba(79, 195, 247, 0.9));
+            --accent-color: #0277bd;
+            --bg-url: url('https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/underocean.gif');
+        }
+
+        body.theme-desert {
+            --header-grad: linear-gradient(135deg, rgba(216, 67, 21, 0.9), rgba(255, 112, 67, 0.9));
+            --accent-color: #d84315;
+            --bg-url: url('https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/desert.jpg');
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            font-family: var(--font-stack);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            background-image: var(--bg-url);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            transition: background-image 0.5s ease;
+            min-height: 100vh;
+        }
+
+        #rain-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--header-grad);
+            padding: 3rem 1rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            font-weight: 800;
+        }
+
+        .theme-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .theme-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 700;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .theme-btn:hover { background: white; color: var(--accent-color); transform: scale(1.05); }
+
+        /* --- CONTAINER & CARDS --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 60px 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        section {
+            background: var(--card-bg);
+            border-radius: 25px;
+            border: var(--card-border);
+            box-shadow: var(--liquid-shadow); /* Fish-eye effect */
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            transition: transform 0.3s ease;
+            /* No Backdrop Filter = Clear Glass */
+        }
+
+        section:hover { transform: translateY(-5px); }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--text-heading);
+            margin-top: 0;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            display: inline-block;
+            background: rgba(255,255,255,0.5); /* Text readability */
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
+
+        h3 {
+            background: rgba(255, 255, 255, 0.6);
+            color: #000;
+            padding: 8px 18px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 1.5rem;
+            border-left: 5px solid var(--accent-color);
+        }
+
+        ul { padding-left: 20px; }
+        
+        li { 
+            margin-bottom: 1rem; 
+            font-size: 1.1rem; 
+            line-height: 1.6; 
+            font-weight: 600; /* Bold for readability on clear glass */
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+        
+        p { 
+            font-weight: 500; 
+            text-shadow: 0 0 10px rgba(255,255,255,0.8); 
+        }
+
+        strong { color: var(--text-accent); font-weight: 800; text-shadow: 1px 1px 0 rgba(255,255,255,0.8); }
+
+        /* --- BIOME SIMULATOR --- */
+        .simulator-box {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px dashed var(--accent-color);
+            margin-top: 20px;
+            box-shadow: var(--liquid-shadow);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .control-group {
+            width: 45%;
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        input[type=range] {
+            width: 100%;
+            margin-top: 10px;
+            accent-color: var(--accent-color);
+            cursor: pointer;
+        }
+
+        .result-screen {
+            height: 250px;
+            background-color: #333;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            border: 2px solid white;
+        }
+
+        /* --- STUDY GUIDE --- */
+        details {
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.6); /* Slightly more opaque for reading */
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        summary {
+            padding: 20px;
+            font-weight: 800;
+            font-size: 1.15rem;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            color: var(--text-heading);
+            display: flex;
+            justify-content: space-between;
+            transition: 0.2s;
+        }
+
+        summary:hover { background: rgba(255,255,255,0.9); color: var(--accent-color); }
+        
+        summary::after { content: '➕'; }
+        details[open] summary::after { content: '➖'; }
+        details[open] summary { border-bottom: 3px solid var(--accent-color); color: var(--accent-color); }
+
+        .answer-content { padding: 25px; background: rgba(255,255,255,0.4); }
+        
+        .short-ans { 
+            background: rgba(232, 245, 233, 0.9); 
+            padding: 15px; 
+            border-radius: 10px; 
+            border-left: 6px solid #2e7d32; 
+            margin-bottom: 15px; 
+            font-weight: 600;
+            color: #1b5e20;
+        }
+        
+        .long-ans { 
+            line-height: 1.8; 
+            color: #000; 
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .control-group { width: 100%; }
+            section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body class="theme-forest">
+
+<!-- RAIN CANVAS -->
+<canvas id="rain-canvas"></canvas>
+
+<header>
+    <h1>The Landscape</h1>
+    <p style="color:white; font-size:1.2rem; opacity:0.9;">Types of Ecosystems: Terrestrial & Aquatic</p>
+    <div class="theme-switcher">
+        <button class="theme-btn" onclick="setTheme('theme-forest')">🌲 Forest</button>
+        <button class="theme-btn" onclick="setTheme('theme-ocean')">🌊 Ocean</button>
+        <button class="theme-btn" onclick="setTheme('theme-desert')">🏜️ Desert</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- SIMULATOR SECTION -->
+    <section>
+        <h2 style="color:#6a1b9a; border-color:#6a1b9a;">🧪 Interactive: Biome Simulator</h2>
+        <p style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 10px; display:inline-block;">Adjust the <strong>Temperature</strong> and <strong>Rainfall</strong> to see which ecosystem forms!</p>
+        
+        <div class="simulator-box">
+            <div class="result-screen" id="simResult">
+                <div style="background:rgba(0,0,0,0.7); padding:20px; border-radius:15px; border: 1px solid rgba(255,255,255,0.3);">
+                    <h2 id="biomeTitle" style="color:white; border:none; margin:0; font-size: 2.5rem; background:none; box-shadow:none;">Tropical Rainforest</h2>
+                    <p id="biomeDesc" style="color:#eee; margin:0; font-size:1.2rem;">Hot and Wet!</p>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label>🌡️ Temperature: <span id="tempVal">30</span>°C</label>
+                    <input type="range" min="-15" max="40" value="30" id="tempRange">
+                </div>
+                <div class="control-group">
+                    <label>🌧️ Rainfall: <span id="rainVal">2500</span> mm</label>
+                    <input type="range" min="0" max="4000" value="2500" id="rainRange">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TERRESTRIAL ECOSYSTEMS -->
+    <section>
+        <h2>🌍 8. Terrestrial Ecosystems</h2>
+        
+        <h3>A. Forest Ecosystems</h3>
+        <ul>
+            <li><strong>Tropical Rainforests:</strong> Close to Equator. 2000-5000 mm rain. Lush vegetation, layers of canopy. <em>Biodiversity:</em> 50-70% of world's species. Soil is nutrient-poor.</li>
+            <li><strong>Temperate Deciduous Forests:</strong> 600-2500 mm rain. Milder winters. Trees (Oak, Maple) shed leaves in winter (creates humus).</li>
+            <li><strong>Taiga (Boreal) Forests:</strong> Short cool summers, long cold winters. 300-500 mm rain (snow). Conifers (Spruce, Fir). Soil is acidic/permafrost.</li>
+        </ul>
+
+        <h3>B. Grassland Ecosystems</h3>
+        <p style="background:rgba(255,255,255,0.5); padding:10px; border-radius:8px;">Occur between forests and deserts. 250-600 mm rain.</p>
+        <ul>
+            <li><strong>Prairies/Steppes:</strong> North America/Eurasia. Deep humus soil (Chernozem).</li>
+            <li><strong>Savanna:</strong> Africa. Warm all year with alternating wet/dry seasons.</li>
+            <li><em>Fauna:</em> Large herbivores (Bison, Antelope) and predators (Lions, Cheetahs).</li>
+        </ul>
+
+        <h3>C. Desert Ecosystems</h3>
+        <p style="background:rgba(255,255,255,0.5); padding:10px; border-radius:8px;">Evaporation > Precipitation (< 25 cm/yr).</p>
+        <ul>
+            <li><strong>Vegetation:</strong> Sparse, drought-tolerant (Succulents, Cactus).</li>
+            <li><strong>Fauna:</strong> Reptiles, rodents (nocturnal).</li>
+            <li><strong>Soil:</strong> Very poor nutrients, no humus.</li>
+        </ul>
+    </section>
+
+    <!-- AQUATIC ECOSYSTEMS -->
+    <section>
+        <h2 style="color:#0277bd; border-color:#0277bd;">💧 8. Aquatic Ecosystems</h2>
+        
+        <h3>A. Freshwater</h3>
+        <ul>
+            <li><strong>Lentic:</strong> Standing water (Lakes, Ponds). Zones: Littoral, Limnetic, Benthic.</li>
+            <li><strong>Lotic:</strong> Flowing water (Rivers, Streams).</li>
+            <li><strong>Wetlands:</strong> Swamps (trees), Marshes (grasses).</li>
+        </ul>
+
+        <h3>B. Marine</h3>
+        <p style="background:rgba(255,255,255,0.5); padding:10px; border-radius:8px;">Salinity ~35 ppt. Includes Open Ocean, Coral Reefs, Coastal areas.</p>
+        
+        <div style="background:rgba(225, 245, 254, 0.8); padding:20px; border-radius:15px; border: 2px dashed #0277bd; margin-top:20px;">
+            <h4 style="margin-top:0; color:#01579b; font-size: 1.3rem;">SPECIAL: Estuarine Ecosystem</h4>
+            <p>Where river freshwater mixes with salty ocean water.</p>
+            <ul>
+                <li>Salinity changes with tides.</li>
+                <li><strong>Rich Productivity:</strong> High nutrients from river.</li>
+                <li><strong>Nursery Sites:</strong> For marine fish/crustaceans.</li>
+                <li><strong>Pollution Filter:</strong> Salt traps organic nutrients/pollutants in sediment.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- STUDY GUIDE -->
+    <section>
+        <h2 style="color:#4a148c; border-color:#4a148c;">📚 Study Guide (Topic 8)</h2>
+        <p><em>Tap to expand answers.</em></p>
+
+        <!-- SHORT QUESTIONS -->
+        <h3 style="background:#4a148c; color:white; border:none; width:100%; text-align:center; box-sizing:border-box;">Short Answer Questions</h3>
+        
+        <details>
+            <summary>Name two natural and two artificial ecosystems.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Natural: Forest, Desert. Artificial: Aquarium, Crop field.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> Ecosystems can be broadly classified into natural and artificial. <strong>Natural ecosystems</strong> operate without major human interference, such as Forests (like Rainforests or Taiga) and Deserts. <strong>Artificial ecosystems</strong> are man-made and maintained, such as Aquariums, Crop fields, or Gardens, where humans control abiotic factors and species composition.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>List three characteristics of a tropical rainforest.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> 1. High rainfall (2000-5000mm). 2. Lush canopy layers. 3. Highest biodiversity.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> Tropical Rainforests are characterized by: 1) High and constant rainfall (2000-5000 mm annually) and temperature. 2) Stratified vegetation with multiple canopy layers blocking sunlight from the floor. 3) Extremely high biodiversity, housing 50-70% of the world's species despite nutrient-poor soil.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>What defines a desert ecosystem?</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Evaporation exceeds precipitation (rainfall < 25 cm/yr). Sparse vegetation and nocturnal animals.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> A Desert Ecosystem is defined primarily by aridity, where evaporation exceeds precipitation. Rainfall is typically less than 25 cm per year. Vegetation is sparse, consisting of drought-tolerant plants like cacti (succulents). Animals are often nocturnal to avoid daytime heat, and the soil is sandy with very low nutrient/humus content.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>Differentiate between lotic and lentic freshwater ecosystems.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Lotic = Flowing water (Rivers). Lentic = Standing water (Lakes/Ponds).</div>
+                <div class="long-ans"><strong>Long Answer:</strong> <strong>Lotic ecosystems</strong> refer to running or flowing water bodies, such as rivers, streams, and springs, where water moves continuously in one direction. <strong>Lentic ecosystems</strong> refer to standing or still water bodies, such as lakes, ponds, and swamps, where water does not flow continuously and can be stratified into layers based on temperature.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>What makes an estuarine ecosystem highly productive?</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Large amounts of nutrients brought in by the river flow mixing with tidal waters.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> Estuarine ecosystems are highly productive because they receive a constant inflow of fresh water rich in nutrients (nitrates, phosphates) from rivers. The mixing of fresh and saltwater traps these nutrients (nutrient trap), supporting a dense population of phytoplankton and serving as nursery grounds for fish and crustaceans.</div>
+            </div>
+        </details>
+
+        <!-- LONG QUESTIONS -->
+        <h3 style="background:#2e7d32; color:white; border:none; width:100%; text-align:center; box-sizing:border-box;">Long Answer Questions</h3>
+
+        <details>
+            <summary>Compare and contrast Tropical Rainforest and Taiga Forest.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Rainforest: Hot/Wet, Broadleaf trees, High biodiversity. Taiga: Cold/Snowy, Conifers, Low biodiversity.</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong><br><br>
+                    <strong>Tropical Rainforest:</strong>
+                    <ul>
+                        <li><strong>Climate:</strong> Occur near the Equator. Warm constant temperature. High rainfall (2000-5000 mm).</li>
+                        <li><strong>Vegetation:</strong> Broad-leaved evergreen trees forming dense canopies. Epiphytes are common.</li>
+                        <li><strong>Soil:</strong> Nutrient-poor due to rapid absorption by plants and leaching by rain.</li>
+                        <li><strong>Biodiversity:</strong> Extremely high (50-70% of world's species).</li>
+                    </ul>
+                    <strong>Taiga (Boreal Forest):</strong>
+                    <ul>
+                        <li><strong>Climate:</strong> High latitudes (Sub-Arctic). Long, cold winters; short, cool summers. Precipitation (300-500 mm) mostly as snow.</li>
+                        <li><strong>Vegetation:</strong> Coniferous trees (Spruce, Fir, Pine) with needle-like leaves.</li>
+                        <li><strong>Soil:</strong> Acidic, nutrient-poor, often underlain by permafrost.</li>
+                        <li><strong>Biodiversity:</strong> Lower diversity; specialized animals adapted to cold.</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>Describe the different types of freshwater ecosystems.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Lentic (Lakes), Lotic (Rivers), and Wetlands (Marshes/Swamps).</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong> Freshwater ecosystems are categorized by water movement:<br><br>
+                    <strong>1. Lentic Ecosystems (Standing Water):</strong> Include lakes and ponds. They exhibit thermal stratification (layers) and zonation:
+                    <ul>
+                        <li><em>Littoral Zone:</em> Shallow shore area with rooted plants.</li>
+                        <li><em>Limnetic Zone:</em> Open water dominated by plankton.</li>
+                        <li><em>Benthic Zone:</em> Bottom sediment with decomposers.</li>
+                    </ul>
+                    <strong>2. Lotic Ecosystems (Flowing Water):</strong> Include rivers and streams. Water flows in one direction, usually high in oxygen due to turbulence. Biotic communities change from headwaters (source) to the mouth.<br><br>
+                    <strong>3. Wetlands:</strong> Areas where soil is saturated with water for at least part of the year. Include <em>Marshes</em> (dominated by grasses) and <em>Swamps</em> (dominated by trees). They act as natural water filters.
+                </div>
+            </div>
+        </details>
+
+        <details>
+            <summary>Discuss the unique characteristics of marine ecosystems, focusing on estuaries.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Marine systems have high salinity. Estuaries are transition zones (River+Sea) that fluctuate in salinity, act as nutrient traps, and serve as nurseries.</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong> Marine ecosystems cover ~70% of Earth and are defined by high salinity (~35 ppt). <br><br>
+                    <strong>Estuaries</strong> are unique transition zones where fresh river water mixes with salty ocean water.
+                    <ul>
+                        <li><strong>Salinity Fluctuation:</strong> Changes daily with tides and seasonally with river flow. Organisms here must be tolerant (euryhaline).</li>
+                        <li><strong>High Productivity:</strong> They act as "nutrient traps" collecting organic matter from rivers, making them some of the most productive ecosystems on Earth.</li>
+                        <li><strong>Nursery Grounds:</strong> The protected waters serve as breeding/nursery sites for many marine fish and crustaceans (shrimp/crabs).</li>
+                        <li><strong>Pollution Filter:</strong> The mixing of salt causes silt and organic matter to settle, trapping pollutants in sediments before they reach the open ocean.</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+        
+        <details>
+            <summary>Categorize and briefly describe terrestrial ecosystems in India.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> 1. Tropical Evergreen 2. Deciduous 3. Thorn 4. Montane 5. Mangrove.</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong>
+                    <ul>
+                        <li><strong>1. Tropical Evergreen Forest:</strong> Found in Western Ghats and NE India. High rainfall, dense multi-layered vegetation.</li>
+                        <li><strong>2. Tropical Deciduous Forests:</strong> Most widespread in India (Central). Trees shed leaves in summer (Monsoon forests).</li>
+                        <li><strong>3. Tropical Thorn Forest:</strong> Found in arid regions (Rajasthan, Gujarat). Sparse, thorny vegetation adapted to low water.</li>
+                        <li><strong>4. Montane Forests:</strong> Found in the Himalayas. Vegetation changes with altitude (Broadleaf -> Conifers -> Alpine Tundra).</li>
+                        <li><strong>5. Mangrove Forests:</strong> Found in coastal deltas (Sundarbans). Salt-tolerant trees with aerial roots (pneumatophores).</li>
+                    </ul>
+                </div>
+            </div>
+        </details>
+    </section>
+
+</div>
+
+<script>
+    // --- RAIN ENGINE ---
+    const canvas = document.getElementById('rain-canvas');
+    const ctx = canvas.getContext('2d');
+    let rainAnimationFrame;
+    let raindrops = [];
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function setTheme(theme) {
+        document.body.className = theme;
+        if (theme === 'theme-forest') {
+            canvas.style.display = 'block';
+            startRain();
+        } else {
+            canvas.style.display = 'none';
+            stopRain();
+        }
+        updateSim(); // Refresh Simulator default
+    }
+
+    // --- Rain Logic ---
+    function createRaindrop() {
+        return {
+            x: Math.random() * canvas.width,
+            y: Math.random() * -100,
+            speed: Math.random() * 8 + 5,
+            length: Math.random() * 20 + 10,
+            opacity: Math.random() * 0.4 + 0.1
+        };
+    }
+
+    function initRain() {
+        raindrops = [];
+        for (let i = 0; i < 150; i++) {
+            raindrops.push(createRaindrop());
+            raindrops[i].y = Math.random() * canvas.height; 
+        }
+    }
+
+    function animateRain() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.lineCap = 'round';
+        for (let i = 0; i < raindrops.length; i++) {
+            let d = raindrops[i];
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d.x, d.y + d.length);
+            ctx.stroke();
+            d.y += d.speed;
+            if (d.y > canvas.height) raindrops[i] = createRaindrop();
+        }
+        rainAnimationFrame = requestAnimationFrame(animateRain);
+    }
+
+    function startRain() { if (!rainAnimationFrame) { initRain(); animateRain(); } }
+    function stopRain() { if (rainAnimationFrame) { cancelAnimationFrame(rainAnimationFrame); rainAnimationFrame = null; ctx.clearRect(0, 0, canvas.width, canvas.height); } }
+    
+    // Init Rain on Load
+    startRain();
+
+    // --- BIOME SIMULATOR ---
+    const tempInput = document.getElementById('tempRange');
+    const rainInput = document.getElementById('rainRange');
+    const tempVal = document.getElementById('tempVal');
+    const rainVal = document.getElementById('rainVal');
+    const biomeTitle = document.getElementById('biomeTitle');
+    const biomeDesc = document.getElementById('biomeDesc');
+    const simResult = document.getElementById('simResult');
+
+    function updateSim() {
+        let t = parseInt(tempInput.value);
+        let r = parseInt(rainInput.value);
+        
+        tempVal.innerText = t;
+        rainVal.innerText = r;
+
+        // Logic using YOUR SPECIFIC LINKS & LOGIC
+        if (t < 5) {
+            // Cold Region
+            if (r > 1500) {
+                // Low T + High P = Tundra
+                setBiome("Tundra", "Very Low Temp & High Precip", "https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/tundra.png");
+            } else if (r < 500) {
+                // Low T + Low P = Cold Desert
+                setBiome("Cold Desert", "Very Low Temp & Precip", "https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/cold%20desert.jpg");
+            } else {
+                setBiome("Taiga / Boreal", "Cold Climate", "https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/tundra.png");
+            }
+        } else if (t > 20) {
+            // Hot Region
+            if (r > 2000) {
+                setBiome("Tropical Rainforest", "Hot & Very Wet", "https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/tropical%20rainforest.gif");
+            } else if (r < 250) {
+                setBiome("Hot Desert", "Hot & Dry", "https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/desert.jpg");
+            } else {
+                setBiome("Savanna", "Warm with Wet/Dry Seasons", "https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/grassland.jpg");
+            }
+        } else {
+            // Moderate Region
+            if (r > 500 && r < 1500) {
+                setBiome("Grassland / Prairie", "Moderate Climate", "https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/grassland.jpg");
+            } else {
+                setBiome("Temperate Forest", "Seasonal Changes", "https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/tropical%20rainforest.gif");
+            }
+        }
+    }
+
+    function setBiome(name, desc, imgUrl) {
+        biomeTitle.innerText = name;
+        biomeDesc.innerText = desc;
+        simResult.style.backgroundImage = `url('${imgUrl}')`;
+    }
+
+    tempInput.addEventListener('input', updateSim);
+    rainInput.addEventListener('input', updateSim);
+    
+    // Init Sim
+    updateSim();
+
+</script>
+
+</body>
+</html>

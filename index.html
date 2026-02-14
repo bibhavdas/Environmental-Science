@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --glass-panel: rgba(30, 41, 59, 0.7);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --accent-green: #4ade80;
+            --accent-blue: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- BACKGROUND ANIMATION CONTAINER --- */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+
+        .spore {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-green);
+            opacity: 0.5;
+            filter: blur(2px);
+        }
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            opacity: 0; /* Animated in */
+            transform: translateY(-20px);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            background: linear-gradient(to right, var(--accent-green), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        /* --- SECTIONS --- */
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--text-main);
+            border-left: 5px solid var(--accent-green);
+            padding-left: 15px;
+            margin-bottom: 30px;
+            margin-top: 50px;
+            opacity: 0; /* Animated in */
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background: var(--glass-panel);
+            border: var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+            display: block;
+            opacity: 0; /* Animated in */
+            transform: translateY(20px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(30, 41, 59, 0.9);
+            box-shadow: 0 20px 40px rgba(74, 222, 128, 0.1);
+            border-color: var(--accent-green);
+        }
+
+        /* Card Content */
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.4rem;
+            color: var(--text-main);
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        /* Status Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .badge-teacher { background: rgba(56, 189, 248, 0.2); color: var(--accent-blue); }
+        .badge-digital { background: rgba(74, 222, 128, 0.2); color: var(--accent-green); }
+
+        /* --- RESOURCE LIST --- */
+        .resource-list {
+            background: var(--glass-panel);
+            border-radius: 20px;
+            border: var(--glass-border);
+            padding: 20px;
+            opacity: 0;
+        }
+
+        .resource-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.2s;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .resource-item:last-child { border-bottom: none; }
+        .resource-item:hover { background: rgba(255,255,255,0.05); }
+        
+        .res-icon { margin-right: 15px; color: var(--accent-blue); }
+
+    </style>
+</head>
+<body>
+
+    <!-- ANIMATED BACKGROUND -->
+    <div id="canvas-container"></div>
+
+    <div class="container">
+        <header>
+            <h1>Environmental Science</h1>
+        </header>
+
+        <!-- SECTION 1: TEACHER RESOURCES -->
+        <h2 class="section-title">📂 Teacher's Resources</h2>
+        <div class="resource-list el-animate">
+            <!-- Example Placeholders -->
+            <a href="#" class="resource-item">
+                <span class="res-icon">📄</span>
+                <div>
+                    <strong>Original Syllabus PDF</strong><br>
+                    <small style="color:var(--text-muted)">Nor provided yet</small>
+                </div>
+            </a>
+            <a href="#" class="resource-item">
+                <span class="res-icon">📊</span>
+                <div>
+                    <strong>Unit 1 Slides (Original PPT)</strong><br>
+                    <small style="color:var(--text-muted)">Reference Material</small>
+                </div>
+            </a>
+        </div>
+
+        <!-- SECTION 2: DIGITAL NOTES -->
+        <h2 class="section-title">🚀 Digitalised Notes</h2>
+        
+        <!-- Category: Ecology -->
+        <h3 style="color:var(--text-muted); margin-bottom: 20px; padding-left:5px;" class="el-animate">Category: Ecology & Ecosystems</h3>
+        
+        <div class="grid">
+            <!-- LINK TO PART 1 -->
+            <a href="evs part 1.html" class="card el-animate">
+                <span class="badge badge-digital">Core Concepts</span>
+                <div class="card-icon">🧬</div>
+                <h3>The Blueprint: Structure</h3>
+                <p>Definitions, Hierarchy of Organization (Organism to Biosphere), and Abiotic/Biotic components.</p>
+            </a>
+
+            <!-- LINK TO PART 2 -->
+            <a href="evs part 2.html" class="card el-animate">
+                <span class="badge badge-digital">Dynamics</span>
+                <div class="card-icon">⚡</div>
+                <h3>The Engine: Energy & Flow</h3>
+                <p>Energy flow (10% Law), Nutrient Cycles (Water, Carbon, Nitrogen), and Ecological Pyramids.</p>
+            </a>
+
+            <!-- LINK TO PART 3 -->
+            <a href="evs part 3.html" class="card el-animate">
+                <span class="badge badge-digital">Diversity</span>
+                <div class="card-icon">🌍</div>
+                <h3>The Landscape: Ecosystems</h3>
+                <p>Terrestrial (Forests, Deserts) vs Aquatic (Freshwater, Marine). Includes Biome Simulator.</p>
+            </a>
+
+            <!-- LINK TO PART 4 -->
+            <a href="evs part 4.html" class="card el-animate">
+                <span class="badge badge-digital">Evolution</span>
+                <div class="card-icon">⏳</div>
+                <h3>The Timeline: Succession</h3>
+                <p>How ecosystems evolve. Primary vs Secondary succession, Pioneer species, and Climax Theory.</p>
+            </a>
+        </div>
+    </div>
+
+<script>
+    // --- 1. BACKGROUND ANIMATION (Floating Spores) ---
+    const container = document.getElementById('canvas-container');
+    const particleCount = 50;
+
+    // Create particles
+    for (let i = 0; i < particleCount; i++) {
+        const spore = document.createElement('div');
+        spore.classList.add('spore');
+        container.appendChild(spore);
+    }
+
+    // Animate with Anime.js
+    anime({
+        targets: '.spore',
+        translateX: function() { return anime.random(-window.innerWidth/2, window.innerWidth/2); },
+        translateY: function() { return anime.random(-window.innerHeight/2, window.innerHeight/2); },
+        scale: function() { return anime.random(0.5, 2); },
+        opacity: function() { return anime.random(0.1, 0.6); },
+        duration: function() { return anime.random(3000, 8000); },
+        delay: function() { return anime.random(0, 1000); },
+        direction: 'alternate',
+        loop: true,
+        easing: 'easeInOutSine'
+    });
+
+    // --- 2. ENTRANCE ANIMATIONS ---
+    
+    // Animate Header
+    anime({
+        targets: 'header',
+        opacity: [0, 1],
+        translateY: [-20, 0],
+        duration: 1000,
+        easing: 'easeOutExpo'
+    });
+
+    // Animate Section Titles
+    anime({
+        targets: '.section-title',
+        opacity: [0, 1],
+        translateX: [-20, 0],
+        delay: anime.stagger(200, {start: 500}),
+        duration: 1000,
+        easing: 'easeOutExpo'
+    });
+
+    // Animate Cards & List items
+    anime({
+        targets: '.el-animate',
+        opacity: [0, 1],
+        translateY: [30, 0],
+        delay: anime.stagger(150, {start: 800}),
+        duration: 800,
+        easing: 'easeOutBack'
+    });
+
+</script>
+
+</body>
+</html>

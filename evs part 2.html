@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecosystem Dynamics & Energy Flow</title>
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --font-stack: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+            
+            /* ULTRA GLASS SETTINGS */
+            --glass-bg: rgba(255, 255, 255, 0.1); 
+            --glass-blur: blur(20px); /* User requested blur */
+            --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            --card-glow: 0 0 15px rgba(255, 255, 255, 0.2);
+
+            /* VIBRANT TEXT PALETTE (High Contrast for Glass) */
+            --text-dark: #000000; 
+            --text-heading: #004d40; 
+            --text-accent: #d32f2f;
+            --text-blue: #0d47a1;
+            --text-orange: #e65100; 
+            --text-purple: #4a148c; 
+        }
+
+        /* --- THEME CONFIGURATIONS --- */
+        body.theme-forest {
+            --header-grad: linear-gradient(135deg, rgba(27, 94, 32, 0.9), rgba(76, 175, 80, 0.8));
+            --accent-color: #2e7d32;
+            --bg-url: url('https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/tropical%20rainforest.gif');
+        }
+
+        body.theme-ocean {
+            --header-grad: linear-gradient(135deg, rgba(1, 87, 155, 0.9), rgba(3, 169, 244, 0.8));
+            --accent-color: #0277bd;
+            --bg-url: url('https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/underocean.gif');
+        }
+
+        body.theme-desert {
+            --header-grad: linear-gradient(135deg, rgba(191, 54, 12, 0.9), rgba(255, 112, 67, 0.8));
+            --accent-color: #d84315;
+            --bg-url: url('https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/desert.jpg');
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            font-family: var(--font-stack);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            background-image: var(--bg-url);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            transition: background-image 0.5s ease;
+            min-height: 100vh;
+        }
+
+        #rain-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1; 
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--header-grad);
+            padding: 3rem 1rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.5);
+            font-weight: 800;
+        }
+
+        .theme-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .theme-btn {
+            background: rgba(255,255,255,0.25);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 700;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .theme-btn:hover { background: white; color: var(--accent-color); transform: scale(1.05); }
+
+        /* --- CONTAINER --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 60px 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* --- GLASS SECTIONS --- */
+        section {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: 25px;
+            border: var(--glass-border);
+            box-shadow: var(--glass-shadow), var(--card-glow);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        section:hover { transform: translateY(-5px); }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--text-heading);
+            margin-top: 0;
+            border-bottom: 2px dashed rgba(255,255,255,0.6);
+            padding-bottom: 10px;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.6);
+        }
+
+        h3 {
+            background: rgba(255, 255, 255, 0.6);
+            color: var(--text-blue);
+            padding: 8px 18px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 1.5rem;
+            border-left: 5px solid var(--accent-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        ul { padding-left: 20px; }
+        li { margin-bottom: 1rem; font-size: 1.1rem; line-height: 1.7; font-weight: 500; text-shadow: 0 0 10px rgba(255,255,255,0.8); }
+        strong { color: var(--text-purple); font-weight: 800; }
+        
+        /* --- INTERACTIVE TABS (Cycles) --- */
+        .tab-container {
+            margin-top: 20px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: rgba(255,255,255,0.4);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text-dark);
+            transition: 0.3s;
+        }
+        .tab-btn.active {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .tab-content {
+            display: none;
+            background: rgba(255,255,255,0.5);
+            padding: 20px;
+            border-radius: 15px;
+            animation: fadeIn 0.5s;
+        }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- DIAGRAMS (CSS Based) --- */
+        .cycle-diagram {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .cycle-step {
+            background: white;
+            padding: 15px;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-weight: bold;
+            color: var(--text-heading);
+            border: 3px solid var(--accent-color);
+            position: relative;
+        }
+        .arrow-right { font-size: 2rem; color: var(--text-orange); align-self: center; }
+
+        /* --- ENERGY SLIDER --- */
+        .slider-box {
+            background: rgba(255,255,255,0.6);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        input[type=range] {
+            width: 80%;
+            margin: 20px 0;
+            accent-color: var(--text-orange);
+        }
+        .energy-val { font-size: 2rem; font-weight: bold; color: var(--text-accent); }
+
+        /* --- FOOD CHAIN GAME --- */
+        .fc-game {
+            background: rgba(255,243,224,0.7);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px dashed var(--text-orange);
+        }
+        .fc-slots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .fc-slot {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #555;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.5);
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .fc-slot.correct { background: #c8e6c9; border-color: green; }
+
+        /* --- STUDY GUIDE --- */
+        details {
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        summary {
+            padding: 20px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            color: var(--text-purple);
+            display: flex;
+            justify-content: space-between;
+        }
+        summary:hover { background: rgba(255, 255, 255, 0.8); color: var(--accent-color); }
+        .answer-content { padding: 25px; background: rgba(255,255,255,0.4); }
+        .short-ans { background: rgba(232, 245, 233, 0.9); padding: 15px; border-radius: 10px; border-left: 6px solid #43a047; margin-bottom: 15px; font-weight: 600; color: #1b5e20; }
+        .long-ans { line-height: 1.8; color: #000; background: rgba(255,255,255,0.85); padding: 20px; border-radius: 10px; }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .cycle-diagram { flex-direction: column; align-items: center; }
+            .arrow-right { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body class="theme-forest">
+
+<canvas id="rain-canvas"></canvas>
+
+<header>
+    <h1>Ecosystem Dynamics & Energy Flow</h1>
+    <div class="theme-switcher">
+        <button class="theme-btn" onclick="setTheme('theme-forest')">🌲 Forest</button>
+        <button class="theme-btn" onclick="setTheme('theme-ocean')">🌊 Ocean</button>
+        <button class="theme-btn" onclick="setTheme('theme-desert')">🏜️ Desert</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- SECTION 1: ENERGY & NUTRIENTS -->
+    <section>
+        <h2>⚡ 4. Energy Flow & Nutrient Cycles</h2>
+        <p><strong>Energy Flow:</strong> Enters ecosystems as light (Sun) and usually leaves as heat. Energy transfer is never 100% efficient (approx. 90% lost between levels).<br>
+        <strong>Nutrients:</strong> Do not usually enter/leave; they must be <em>RECYCLED</em>.</p>
+
+        <h3>Interactive Nutrient Cycles</h3>
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="openTab('water')">💧 Water Cycle</button>
+                <button class="tab-btn" onclick="openTab('carbon')">🍃 Carbon Cycle</button>
+                <button class="tab-btn" onclick="openTab('nitrogen')">⚡ Nitrogen Cycle</button>
+            </div>
+
+            <!-- WATER CYCLE -->
+            <div id="water" class="tab-content active">
+                <h4>The Water Cycle</h4>
+                <div class="cycle-diagram">
+                    <div class="cycle-step" style="background:#e3f2fd">Evaporation<br>(Ocean)</div>
+                    <div class="arrow-right">➡</div>
+                    <div class="cycle-step" style="background:#bbdefb">Condensation<br>(Clouds)</div>
+                    <div class="arrow-right">➡</div>
+                    <div class="cycle-step" style="background:#90caf9">Precipitation<br>(Rain)</div>
+                    <div class="arrow-right">➡</div>
+                    <div class="cycle-step" style="background:#64b5f6">Runoff &<br>Percolation</div>
+                </div>
+                <p>Involves evaporation, condensation, precipitation, runoff, percolation, transpiration (plants), and groundwater.</p>
+            </div>
+
+            <!-- CARBON CYCLE -->
+            <div id="carbon" class="tab-content">
+                <h4>The Carbon Cycle</h4>
+                <div class="cycle-diagram">
+                    <div class="cycle-step" style="border-color:#555">Atmospheric<br>CO₂</div>
+                    <div class="arrow-right">➡</div>
+                    <div class="cycle-step" style="border-color:green">Photosynthesis<br>(Plants)</div>
+                    <div class="arrow-right">➡</div>
+                    <div class="cycle-step" style="border-color:orange">Respiration &<br>Decomposition</div>
+                    <div class="arrow-right">➡</div>
+                    <div class="cycle-step" style="border-color:black">Fossil Fuels<br>(Reservoir)</div>
+                </div>
+                <p><strong>Key Processes:</strong> Assimilation (Plants), Respiration (Animals/Soil), Decomposition, Combustion.</p>
+            </div>
+
+            <!-- NITROGEN CYCLE -->
+            <div id="nitrogen" class="tab-content">
+                <h4>The Nitrogen Cycle</h4>
+                <div class="cycle-diagram">
+                    <div class="cycle-step">Atmospheric<br>N₂</div>
+                    <div class="arrow-right">➡</div>
+                    <div class="cycle-step">Fixation<br>(Bacteria/Lightning)</div>
+                    <div class="arrow-right">➡</div>
+                    <div class="cycle-step">Ammonification<br>& Nitrification</div>
+                    <div class="arrow-right">➡</div>
+                    <div class="cycle-step">Denitrification<br>(Back to Air)</div>
+                </div>
+                <ul>
+                    <li><strong>Nitrogen-fixing bacteria:</strong> Convert N₂ into usable forms (Nitrates).</li>
+                    <li><strong>Denitrifying bacteria:</strong> Return Nitrogen gas to the atmosphere.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: FOOD CHAINS -->
+    <section>
+        <h2>🦁 5. Food Chains & Webs</h2>
+        <ul>
+            <li><strong>Food Chain:</strong> Linear sequence showing one path of energy. (Arrow points to the eater).</li>
+            <li><strong>Food Web:</strong> Shows <em>all possible</em> energy paths (multiple chains connected).</li>
+            <li><strong>Trophic Levels:</strong>
+                <ul>
+                    <li>1st: Primary Producers</li>
+                    <li>2nd: Primary Consumers (Herbivores)</li>
+                    <li>3rd: Secondary Consumers</li>
+                    <li>4th: Tertiary Consumers</li>
+                </ul>
+            </li>
+        </ul>
+
+        <!-- MINI GAME -->
+        <div class="fc-game">
+            <h3>🎮 Mini-Game: Build the Chain</h3>
+            <p>Click the organisms in the correct order (Producer -> Herbivore -> Carnivore)</p>
+            <div style="margin-bottom:10px;">
+                <button class="tab-btn" onclick="checkChain('Lion')">🦁 Lion</button>
+                <button class="tab-btn" onclick="checkChain('Grass')">🌿 Grass</button>
+                <button class="tab-btn" onclick="checkChain('Deer')">🦌 Deer</button>
+            </div>
+            <div class="fc-slots">
+                <div id="slot1" class="fc-slot">1</div>
+                <div style="align-self:center;">➡</div>
+                <div id="slot2" class="fc-slot">2</div>
+                <div style="align-self:center;">➡</div>
+                <div id="slot3" class="fc-slot">3</div>
+            </div>
+            <p id="chainMsg" style="font-weight:bold; color:var(--text-orange);"></p>
+        </div>
+    </section>
+
+    <!-- SECTION 3: PRODUCTIVITY -->
+    <section>
+        <h2>📈 6. Ecosystem Productivity</h2>
+        <p><strong>Productivity:</strong> Rate of biomass generation (gm/m²/yr).</p>
+        <ul>
+            <li><strong>Gross Productivity:</strong> Total biomass produced.</li>
+            <li><strong>Net Productivity:</strong> (Photosynthesis - Respiration). This is the actual accumulated biomass.</li>
+        </ul>
+        <div style="background:rgba(255,255,255,0.5); padding:15px; border-radius:10px; margin-top:10px;">
+            <p><strong>Highest Productivity:</strong> Tropical Rainforest (2200 gm/m²/yr)<br>
+            <strong>Moderate:</strong> Estuaries (1500 gm/m²/yr)<br>
+            <strong>Lowest:</strong> Open Ocean (125 gm/m²/yr)</p>
+        </div>
+    </section>
+
+    <!-- SECTION 4: PYRAMIDS -->
+    <section>
+        <h2>🔺 7. Ecological Pyramids</h2>
+        <p>Diagrams showing relationships between trophic levels.</p>
+        
+        <h3>Types of Pyramids</h3>
+        <ul>
+            <li><strong>Pyramid of Numbers:</strong> Number of individuals. <em>Can be inverted</em> (e.g., one tree, many insects).</li>
+            <li><strong>Pyramid of Biomass:</strong> Total mass. <em>Can be inverted</em> in aquatic systems (phytoplankton < zooplankton).</li>
+            <li><strong>Pyramid of Energy:</strong> Energy stored. <strong>NEVER inverted.</strong></li>
+        </ul>
+
+        <div class="slider-box">
+            <h3>⚡ Interactive: Lindemann's 10% Law</h3>
+            <p>Energy transfer is inefficient. 90% is lost as heat/waste. Only 10% moves up.</p>
+            <p><strong>Sunlight Input: <span style="color:orange;">1,000,000 J</span></strong></p>
+            <input type="range" min="0" max="3" value="0" id="energySlider">
+            <div id="energyOutput">
+                <p>Level: <strong>Producers</strong></p>
+                <div class="energy-val">10,000 J</div>
+                <p style="font-size:0.9rem;">(1% of sunlight captured)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: STUDY GUIDE -->
+    <section>
+        <h2>📚 5. Study Guide (Part 2 Topics)</h2>
+        <p><em>Tap to reveal full answers.</em></p>
+
+        <!-- Topic 4: Energy Flow & Nutrients -->
+        <h3 style="background:var(--text-heading); color:white;">Topic 4: Energy & Nutrients</h3>
+        <details>
+            <summary>How does energy flow through an ecosystem?</summary>
+            <div class="answer-content">
+                <div class="short-ans">Energy enters as light, moves through trophic levels, and leaves as heat. It flows in one direction and decreases at each level.</div>
+                <div class="long-ans">Energy enters ecosystems as light (solar energy) and is captured by producers. It is transferred to consumers when they eat. Usually, energy leaves the ecosystem as heat (via respiration). Energy transfer is never 100% efficient; approximately 90% is lost between trophic levels due to metabolic processes (heat), excretion, or parts not being eaten.</div>
+            </div>
+        </details>
+        <details>
+            <summary>Why is nutrient recycling important?</summary>
+            <div class="answer-content">
+                <div class="short-ans">Nutrients do not usually enter the ecosystem from outside, so they must be recycled to support new life.</div>
+                <div class="long-ans">Unlike energy which flows through, nutrients (matter) are finite in an ecosystem. They do not usually enter an ecosystem and need to be RECYCLED. Decomposers break down dead matter, returning essential nutrients (N, P, C) to the soil or atmosphere, making them available for producers again.</div>
+            </div>
+        </details>
+        <details>
+            <summary>Name two ways carbon dioxide enters the atmosphere.</summary>
+            <div class="answer-content">
+                <div class="short-ans">Respiration (animal/plant) and Decomposition.</div>
+                <div class="long-ans">In the Carbon Cycle, CO₂ is released into the atmosphere through **Respiration** (animals and plants breaking down glucose for energy) and **Decomposition** (microbes breaking down dead organic matter). It is also released via combustion of fossil fuels.</div>
+            </div>
+        </details>
+
+        <!-- Topic 5: Food Chains -->
+        <h3 style="background:var(--text-heading); color:white;">Topic 5: Food Chains & Webs</h3>
+        <details>
+            <summary>Define a food chain.</summary>
+            <div class="answer-content">
+                <div class="short-ans">A linear sequence of relationships between trophic levels showing one path of energy flow.</div>
+                <div class="long-ans">A food chain is a linear sequence of relationships between trophic levels. It shows just one path of energy flow from the sun to producers and then to consumers. The arrows point from the organism being eaten to the eater, indicating the direction of energy transfer.</div>
+            </div>
+        </details>
+        <details>
+            <summary>How does a food web differ from a food chain?</summary>
+            <div class="answer-content">
+                <div class="short-ans">A food web shows all possible energy paths and connections, while a chain shows only one.</div>
+                <div class="long-ans">A Food Chain represents a single, linear path of energy transfer (e.g., Grass -> Rabbit -> Fox). A Food Web, however, shows **all possible energy paths** and feeding relationships in a community. It connects multiple food chains together, representing the complex reality that most organisms eat more than one type of food.</div>
+            </div>
+        </details>
+
+        <!-- Topic 6: Productivity -->
+        <h3 style="background:var(--text-heading); color:white;">Topic 6: Productivity</h3>
+        <details>
+            <summary>Define ecosystem productivity.</summary>
+            <div class="answer-content">
+                <div class="short-ans">The rate at which biomass (organic matter) is generated in an ecosystem.</div>
+                <div class="long-ans">Productivity is the generation of Biomass, i.e., the dry organic matter weight of an ecosystem given in gm/m²/yr. It measures how much energy is fixed by the producers.</div>
+            </div>
+        </details>
+        <details>
+            <summary>What is net productivity?</summary>
+            <div class="answer-content">
+                <div class="short-ans">Net Productivity = Photosynthesis - Respiration. It is the accumulated biomass.</div>
+                <div class="long-ans">Most important is the **Net Productivity**, which is calculated as (Gross Productivity/Photosynthesis - Respiration). This represents the actual accumulated biomass that is available for the next trophic level (consumers) to eat.</div>
+            </div>
+        </details>
+        <details>
+            <summary>Why is energy transfer not 100% efficient?</summary>
+            <div class="answer-content">
+                <div class="short-ans">Energy is lost as heat, waste, or unused biomass.</div>
+                <div class="long-ans">Energy transfer is never 100% efficient. Approximately **90% of energy is lost** between trophic levels. Causes include: energy not ingested (roots/bones left behind), energy not digested (excreted as waste), and energy lost as heat during cellular respiration.</div>
+            </div>
+        </details>
+
+        <!-- Topic 7: Pyramids -->
+        <h3 style="background:var(--text-heading); color:white;">Topic 7: Ecological Pyramids</h3>
+        <details>
+            <summary>Why can a pyramid of energy never be inverted?</summary>
+            <div class="answer-content">
+                <div class="short-ans">Because of the Laws of Thermodynamics; energy is always lost as heat at each step.</div>
+                <div class="long-ans">A Pyramid of Energy represents the amount of energy sequestered at different strata. It can **NEVER be inverted** due to the Laws of Thermodynamics. Each higher level must be smaller than the lower levels because some energy is inevitably lost as heat (via respiration) within each level. Therefore, 100% of energy entering a level cannot be passed to the next.</div>
+            </div>
+        </details>
+        <details>
+            <summary>State Lindemann's Law of 10%.</summary>
+            <div class="answer-content">
+                <div class="short-ans">Each trophic level harvests only about 10% of the energy from the level below.</div>
+                <div class="long-ans">LINDEMANN’s Law of 10% states that each trophic level harvests only about one tenth (10%) of the energy from the level below it. Consequently, it can support only about one 10th the amount of living tissue present in the previous strata.</div>
+            </div>
+        </details>
+    </section>
+
+</div>
+
+<script>
+    // --- RAIN ENGINE ---
+    const canvas = document.getElementById('rain-canvas');
+    const ctx = canvas.getContext('2d');
+    let rainAnimationFrame;
+    let raindrops = [];
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function setTheme(theme) {
+        document.body.className = theme;
+        if (theme === 'theme-forest') {
+            canvas.style.display = 'block';
+            startRain();
+        } else {
+            canvas.style.display = 'none';
+            stopRain();
+        }
+    }
+
+    function createRaindrop() {
+        return {
+            x: Math.random() * canvas.width,
+            y: Math.random() * -100,
+            speed: Math.random() * 8 + 5,
+            length: Math.random() * 20 + 10,
+            opacity: Math.random() * 0.4 + 0.1
+        };
+    }
+
+    function initRain() {
+        raindrops = [];
+        for (let i = 0; i < 150; i++) {
+            raindrops.push(createRaindrop());
+            raindrops[i].y = Math.random() * canvas.height; 
+        }
+    }
+
+    function animateRain() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.lineCap = 'round';
+        for (let i = 0; i < raindrops.length; i++) {
+            let d = raindrops[i];
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d.x, d.y + d.length);
+            ctx.stroke();
+            d.y += d.speed;
+            if (d.y > canvas.height) raindrops[i] = createRaindrop();
+        }
+        rainAnimationFrame = requestAnimationFrame(animateRain);
+    }
+
+    function startRain() { if (!rainAnimationFrame) { initRain(); animateRain(); } }
+    function stopRain() { if (rainAnimationFrame) { cancelAnimationFrame(rainAnimationFrame); rainAnimationFrame = null; ctx.clearRect(0, 0, canvas.width, canvas.height); } }
+    startRain();
+
+    // --- TABS LOGIC ---
+    function openTab(tabName) {
+        let contents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
+        
+        let buttons = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
+        
+        document.getElementById(tabName).classList.add("active");
+        event.currentTarget.classList.add("active");
+    }
+
+    // --- ENERGY SLIDER LOGIC ---
+    const eSlider = document.getElementById('energySlider');
+    const eOutput = document.getElementById('energyOutput');
+    const levels = [
+        { name: "Producers (Plants)", val: "10,000 J", desc: "(1% of Sunlight captured)" },
+        { name: "Primary Consumers (Herbivores)", val: "1,000 J", desc: "(10% of Producers)" },
+        { name: "Secondary Consumers", val: "100 J", desc: "(10% of Primary)" },
+        { name: "Tertiary Consumers", val: "10 J", desc: "(10% of Secondary)" }
+    ];
+
+    eSlider.addEventListener('input', function() {
+        const i = this.value;
+        eOutput.innerHTML = `<p>Level: <strong>${levels[i].name}</strong></p>
+                             <div class="energy-val">${levels[i].val}</div>
+                             <p style="font-size:0.9rem;">${levels[i].desc}</p>`;
+    });
+
+    // --- FOOD CHAIN GAME ---
+    let chainOrder = [];
+    function checkChain(item) {
+        chainOrder.push(item);
+        document.getElementById('slot' + chainOrder.length).innerText = item;
+        
+        if (chainOrder.length === 3) {
+            if (chainOrder[0] === 'Grass' && chainOrder[1] === 'Deer' && chainOrder[2] === 'Lion') {
+                document.getElementById('chainMsg').innerText = "✅ Correct! Energy flows: Producer -> Herbivore -> Carnivore";
+                document.querySelectorAll('.fc-slot').forEach(el => el.classList.add('correct'));
+            } else {
+                document.getElementById('chainMsg').innerText = "❌ Incorrect. Resetting... Remember: Start with the Producer!";
+                setTimeout(() => {
+                    chainOrder = [];
+                    document.getElementById('slot1').innerText = "1";
+                    document.getElementById('slot2').innerText = "2";
+                    document.getElementById('slot3').innerText = "3";
+                    document.getElementById('chainMsg').innerText = "";
+                    document.querySelectorAll('.fc-slot').forEach(el => el.classList.remove('correct'));
+                }, 2000);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecosystem Structure, Ecology, and the Hierarchy of Life</title>
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --font-stack: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+            
+            /* Glass Effect Settings (95% Transparency feel) */
+            --glass-bg: rgba(255, 255, 255, 0.15); 
+            --glass-blur: blur(25px);
+            --glass-border: 1px solid rgba(100, 255, 100, 0.3); /* Greenish Translucent Edge */
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --card-glow: 0 0 15px rgba(46, 204, 113, 0.2);
+
+            /* Fun Text Colors */
+            --text-dark: #002f25; /* Very dark green/black for main text readability */
+            --text-heading: #004d40;
+            --text-accent: #d32f2f;
+            --text-def: #01579b; /* Definition Blue */
+            --text-ex: #e65100; /* Example Orange */
+        }
+
+        /* --- THEME CONFIGURATIONS --- */
+        body.theme-forest {
+            --header-grad: linear-gradient(135deg, rgba(27, 94, 32, 0.9), rgba(76, 175, 80, 0.8));
+            --accent-color: #2e7d32;
+            --bg-url: url('https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/tropical%20rainforest.gif');
+        }
+
+        body.theme-ocean {
+            --header-grad: linear-gradient(135deg, rgba(1, 87, 155, 0.9), rgba(3, 169, 244, 0.8));
+            --accent-color: #0277bd;
+            --bg-url: url('https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/underocean.gif');
+        }
+
+        body.theme-desert {
+            --header-grad: linear-gradient(135deg, rgba(191, 54, 12, 0.9), rgba(255, 112, 67, 0.8));
+            --accent-color: #d84315;
+            --bg-url: url('https://raw.githubusercontent.com/bibhavdas/Environmental-Science/refs/heads/main/desert.jpg');
+        }
+
+        /* --- GLOBAL LAYOUT --- */
+        body {
+            font-family: var(--font-stack);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            background-image: var(--bg-url);
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            transition: background-image 0.5s ease;
+            min-height: 100vh;
+        }
+
+        /* Rain Canvas */
+        #rain-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1; 
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: var(--header-grad);
+            padding: 3rem 1rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: white;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+
+        .theme-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .theme-btn {
+            background: rgba(255,255,255,0.25);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 700;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .theme-btn:hover { 
+            background: white; 
+            color: var(--accent-color); 
+            transform: scale(1.05);
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 40px 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* --- GLASS CARDS (Sections) --- */
+        section {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: 25px;
+            border: var(--glass-border);
+            box-shadow: var(--glass-shadow), var(--card-glow);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        section:hover { transform: translateY(-5px); }
+
+        h2 {
+            font-size: 2.2rem;
+            color: var(--text-heading);
+            margin-top: 0;
+            border-bottom: 2px dashed rgba(46, 204, 113, 0.5);
+            padding-bottom: 10px;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+        }
+
+        h3 {
+            background: rgba(255, 255, 255, 0.4);
+            color: #1a237e;
+            padding: 10px 18px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 1.5rem;
+            border-left: 5px solid var(--accent-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        ul { padding-left: 20px; }
+        
+        li { 
+            margin-bottom: 1rem; 
+            font-size: 1.1rem; 
+            line-height: 1.7; 
+            color: #000; /* Max contrast */
+            text-shadow: 0 0 10px rgba(255,255,255,0.8); /* Glow for readability */
+        }
+
+        /* Colorful Text Highlights */
+        strong { color: var(--text-heading); font-weight: 800; }
+        em { color: var(--text-ex); font-style: italic; font-weight: 600; }
+        
+        /* Specific list styling for clarity */
+        .def-list li::marker { color: var(--text-def); font-size: 1.2em; }
+
+        /* --- DIAGRAMS (CSS Based) --- */
+        .diagram-box {
+            background: rgba(255,255,255,0.3);
+            border: 2px dashed var(--accent-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .photosynthesis-eq {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .chem-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: #2e7d32;
+        }
+
+        .arrow { font-size: 2rem; color: #f57f17; }
+
+        /* --- INTERACTIVE 1: SLIDER --- */
+        .slider-wrapper {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.6);
+            margin-top: 20px;
+        }
+
+        .scale-visual {
+            height: 220px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            transition: background 0.5s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 2px solid white;
+        }
+
+        input[type=range] {
+            width: 100%;
+            cursor: pointer;
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(0,0,0,0.2);
+            outline: none;
+            accent-color: var(--accent-color);
+        }
+
+        /* --- INTERACTIVE 2: HIERARCHY --- */
+        .hierarchy-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .circle-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 12px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            font-weight: 800;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            border: 3px solid rgba(255,255,255,0.7);
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .circle:hover { transform: scale(1.15); z-index: 100; border-color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+
+        .c-biosphere { width: 350px; height: 350px; background: linear-gradient(45deg, #232526, #414345); z-index: 1; }
+        .c-ecosystem { width: 290px; height: 290px; background: linear-gradient(45deg, #1A2980, #26D0CE); z-index: 2; }
+        .c-community { width: 230px; height: 230px; background: linear-gradient(45deg, #11998e, #38ef7d); z-index: 3; }
+        .c-population { width: 170px; height: 170px; background: linear-gradient(45deg, #F2994A, #F2C94C); z-index: 4; }
+        .c-species { width: 110px; height: 110px; background: linear-gradient(45deg, #e52d27, #b31217); z-index: 5; }
+        .c-organism { width: 60px; height: 60px; background: white; color: #333; z-index: 6; align-items: center; padding: 0; border: none;}
+
+        .definition-box {
+            background: rgba(255,255,255,0.8);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 8px solid var(--accent-color);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            max-width: 600px;
+            width: 100%;
+            min-height: 80px;
+            font-size: 1.1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- INTERACTIVE 3: GAME --- */
+        .game-area {
+            background: rgba(255, 243, 224, 0.6);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px dashed #f57c00;
+            margin-top: 20px;
+        }
+
+        .draggable-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .draggable {
+            background: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: grab;
+            border: 2px solid transparent;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .draggable:active { transform: scale(1.1) rotate(3deg); }
+
+        .drop-zones-wrapper {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .drop-zone {
+            width: 45%;
+            min-height: 140px;
+            background: rgba(255,255,255,0.5);
+            border: 3px solid rgba(255,255,255,0.8);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        
+        .drop-zone h4 { margin: 0; color: #333; pointer-events: none; font-weight: 800; }
+
+        /* --- STUDY GUIDE --- */
+        details {
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: transform 0.2s;
+        }
+        
+        details:hover { transform: scale(1.01); }
+
+        summary {
+            padding: 20px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            color: #1a237e; /* Deep Indigo */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        summary:hover { background: rgba(255, 255, 255, 0.8); color: var(--accent-color); }
+        
+        summary::after { content: '👉'; font-size: 1.2rem; transition: transform 0.3s; }
+        details[open] summary::after { content: '👇'; }
+        details[open] summary { border-bottom: 2px solid var(--accent-color); color: var(--accent-color); }
+
+        .answer-content { padding: 25px; background: rgba(255,255,255,0.4); }
+        
+        .short-ans { 
+            background: rgba(232, 245, 233, 0.9); 
+            padding: 15px 20px; 
+            border-radius: 10px; 
+            border-left: 6px solid #43a047; 
+            margin-bottom: 15px; 
+            font-weight: 600;
+            color: #1b5e20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .long-ans { 
+            line-height: 1.8; 
+            color: #263238; 
+            background: rgba(255,255,255,0.85);
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .circle-container { transform: scale(0.85); margin: 0; }
+            .drop-zones-wrapper { flex-direction: column; }
+            .drop-zone { width: 100%; margin-bottom: 15px; }
+            section { padding: 1.5rem; }
+            .theme-btn { padding: 8px 12px; font-size: 0.9rem; }
+            .chem-item { font-size: 0.9rem; padding: 5px 10px; }
+        }
+
+    </style>
+</head>
+<body class="theme-forest">
+
+<!-- RAIN CANVAS (Fixed Background for Forest Theme) -->
+<canvas id="rain-canvas"></canvas>
+
+<header>
+    <h1>Ecosystem Structure, Ecology, and the Hierarchy of Life</h1>
+    <div class="theme-switcher">
+        <button class="theme-btn" onclick="setTheme('theme-forest')">🌲 Forest</button>
+        <button class="theme-btn" onclick="setTheme('theme-ocean')">🌊 Ocean</button>
+        <button class="theme-btn" onclick="setTheme('theme-desert')">🏜️ Desert</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- SECTION 1: INTRO -->
+    <section id="intro">
+        <h2>🌱 1. Introduction to Ecology & Ecosystems</h2>
+        
+        <h3>1.1 Ecology</h3>
+        <ul class="def-list">
+            <li><strong>Definition:</strong> The study of living organisms in their natural environment, how they interact with one another, and how they interact with their non-living environment.</li>
+            <li><strong>Etymology:</strong> Derived from Greek: <em>Oikos</em> (House/Habitat) + <em>Logos</em> (Study).</li>
+        </ul>
+
+        <h3>1.2 Ecosystem</h3>
+        <ul class="def-list">
+            <li><strong>Definition:</strong> A functional unit where a community of living organisms (biotic) interacts with their non-living environment (abiotic).</li>
+            <li><strong>Scales:</strong> Ecosystems exist at various spatial scales.</li>
+            <li><em>Small/Medium Scale Examples:</em> A person’s mouth, a discarded coke can, Cougar lake.</li>
+            <li><em>Global Scale:</em> The Biosphere (Earth).</li>
+        </ul>
+
+        <!-- INTERACTIVE SLIDER -->
+        <div class="slider-wrapper">
+            <h3 style="margin-top:0;">🔍 Interactive: Ecosystem Scales</h3>
+            <div class="scale-visual" id="scaleVisual">Micro Scale</div>
+            <div style="margin: 15px; font-size: 1.2rem; font-weight: bold; color: #333;" id="scaleText">A Person's Mouth (Bacteria & Environment)</div>
+            <input type="range" min="1" max="3" value="1" id="scaleSlider">
+            <p style="color: #444; font-weight:bold; margin-top: 10px;">Move the slider to explore scales</p>
+        </div>
+
+        <h3>1.3 Hierarchy of Biological Organization</h3>
+        <p style="font-size: 1.2rem; text-align: center; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 15px; font-weight: bold; color: #444;">
+            Atoms &rarr; Molecules &rarr; Organelles &rarr; Cells &rarr; Tissues &rarr; Organs &rarr; Systems &rarr; <span style="color:var(--text-accent)">Organism</span>
+        </p>
+    </section>
+
+    <!-- SECTION 2: LEVELS -->
+    <section id="levels">
+        <h2>📶 2. Ecological Levels of Organization</h2>
+        
+        <div class="hierarchy-wrapper">
+            <h4 style="color: #333; margin-bottom: 0;">Interactive Hierarchy (Tap a circle)</h4>
+            
+            <div class="circle-container">
+                <div class="circle c-biosphere" onclick="updateDefinition('biosphere')">Biosphere</div>
+                <div class="circle c-ecosystem" onclick="updateDefinition('ecosystem')">Ecosystem</div>
+                <div class="circle c-community" onclick="updateDefinition('community')">Community</div>
+                <div class="circle c-population" onclick="updateDefinition('population')">Population</div>
+                <div class="circle c-species" onclick="updateDefinition('species')">Species</div>
+                <div class="circle c-organism" onclick="updateDefinition('organism')">Org</div>
+            </div>
+
+            <div id="defBox" class="definition-box">
+                <strong>Select a level above to learn more.</strong>
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 2px dashed rgba(46, 204, 113, 0.5); margin: 30px 0;">
+        
+        <ul class="def-list">
+            <li><strong>Organism:</strong> An individual living entity.</li>
+            <li><strong>Species:</strong> A group of organisms that can reproduce and produce fully fertile offspring. (e.g., <em>Great White Pelican - Pelecanus onocrotalus</em>).</li>
+            <li><strong>Population:</strong> A group of organisms of the <strong>same species</strong> which live in the <strong>same habitat</strong> at the <strong>same time</strong> where they can freely interbreed.</li>
+            <li><strong>Habitat:</strong> The environment in which a species normally lives or the location of a living organism. (e.g., The black-veined white butterfly <em>Aporia crataegi</em>).</li>
+            <li><strong>Community:</strong> All the populations of the different species living and interacting in the same ecosystem.</li>
+            <li><strong>Ecosystem:</strong> Community (Biotic) interacting with environment (Abiotic).</li>
+            <li><strong>Biosphere:</strong> The global sum of all ecosystems (Atmosphere + Hydrosphere + Lithosphere = Ecosphere/Biosphere).</li>
+        </ul>
+    </section>
+
+    <!-- SECTION 3: COMPONENTS -->
+    <section id="components">
+        <h2>⚙️ 3. Components of an Ecosystem</h2>
+        <p style="font-weight:bold; font-size:1.1rem;">An ecosystem consists of two main factors: <span style="color:#01579b">Abiotic</span> (Non-living) and <span style="color:#2e7d32">Biotic</span> (Living).</p>
+
+        <h3>3.1 Abiotic Components (Non-living)</h3>
+        <p style="background: rgba(255,255,255,0.5); padding: 10px; border-radius: 8px;">Nonliving factors that have an effect on living things.</p>
+        <ul>
+            <li><strong>Water:</strong> Organisms have water in their bodies (50-95%) and chemical reactions need water to happen.</li>
+            <li><strong>Soil:</strong> Type of soil determines which plants and other organisms live in that location.</li>
+            <li><strong>Physical Environmental Components:</strong>
+                <ul>
+                    <li><strong>Light and Temperature:</strong> Affect photosynthesis (plant growth is limited to amount of sunlight).</li>
+                    <li><strong>Other factors:</strong> Landforms, drainage, rocks, elevation, climatic elements.</li>
+                </ul>
+            </li>
+            <li><strong>Nutrients:</strong>
+                <ul style="background: rgba(255,255,255,0.4); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.6);">
+                    <li style="margin-bottom: 20px;"><strong>Macro-nutrients:</strong> All nutrients required in <strong>large quantity</strong> by plants & animals.<br>
+                        <span style="color:var(--text-ex); display:block; margin-top:5px;">Full Form: Nitrogen (N), Phosphorus (P), Potassium (K), Calcium (Ca), Magnesium (Mg), Sulphur (S).</span>
+                    </li>
+                    <li style="margin-bottom: 20px;"><strong>Micro-nutrients:</strong> All nutrients required in <strong>small quantity</strong> but very essential to the functioning of organisms.<br>
+                        <span style="color:var(--text-ex); display:block; margin-top:5px;">Full Form: Boron (B), Iron (Fe), Manganese (Mn), Copper (Cu), Zinc (Zn), Cobalt (Co), Molybdenum (Mo), Chlorine (Cl).</span>
+                    </li>
+                    <li><strong>Organic Nutrients:</strong> Humus.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <div id="biotic-part">
+            <h3>3.2 Biotic Components (Living)</h3>
+            
+            <h4>A. Primary Producers (Autotrophs)</h4>
+            <p>Organisms that can synthesize their own complex, energy-rich, organic molecules from simple inorganic molecules by photosynthesis. (e.g., Green plants, algae, bacteria).</p>
+            
+            <!-- PHOTOSYNTHESIS DIAGRAM -->
+            <div class="diagram-box">
+                <p style="margin-bottom:10px; font-weight:bold;">Photosynthesis Equation</p>
+                <div class="photosynthesis-eq">
+                    <span class="chem-item" style="color:#fbc02d">Energy (Sun)</span> + 
+                    <span class="chem-item">6CO₂</span> + 
+                    <span class="chem-item">6H₂O</span>
+                    <span class="arrow">&rarr;</span>
+                    <span class="chem-item" style="color:#43a047">C₆H₁₂O₆ (Glucose)</span> + 
+                    <span class="chem-item" style="color:#039be5">6O₂</span>
+                </div>
+            </div>
+
+            <h4>B. Consumers (Heterotrophs)</h4>
+            <p>Organisms who must obtain complex, energy-rich, organic compounds from the bodies of other organisms (dead or alive).</p>
+            
+            <p><strong style="color:#e65100">1. Macro-consumers:</strong></p>
+            <ul>
+                <li><strong>Herbivores:</strong> Plant eaters (Primary Consumers). <em>Example: Sheep.</em></li>
+                <li><strong>Carnivores:</strong> Animal eaters (Secondary/Tertiary Consumers). <em>Example: Lion.</em></li>
+                <li><strong>Omnivores:</strong> Plant & animal eaters. <em>Example: Humans.</em></li>
+            </ul>
+
+            <p><strong style="color:#4a148c">2. Micro-consumers (Decomposers):</strong></p>
+            <ul style="background: rgba(255,255,255,0.4); padding: 20px; border-radius: 15px;">
+                <li style="margin-bottom:15px;"><strong>Detritivores:</strong> Heterotrophic organisms who ingest dead organic matter. <span style="color:#d84315; font-weight:bold; background:white; padding:2px 5px; border-radius:4px;">Ingest first, then digest.</span><br>
+                <em>Examples: Earthworms (Lumbricus terrestris), woodlice, large scavengers.</em></li>
+                <li><strong>Saprotrophs:</strong> Heterotrophic organisms who secrete digestive enzymes onto dead organism matter and absorb the digested material. <span style="color:#1565c0; font-weight:bold; background:white; padding:2px 5px; border-radius:4px;">Digest first, then absorb.</span><br>
+                <em>Examples: Fungi (Chanterelle), bacteria.</em></li>
+            </ul>
+
+            <!-- INTERACTIVE DECOMPOSER SORT -->
+            <div class="game-area">
+                <h3 style="background:white; margin-top:0;">🎮 Mini-Game: Sort the Decomposers</h3>
+                <p>Drag or Tap items to sort them into "Ingest First" or "Digest First".</p>
+                
+                <div class="draggable-items">
+                    <div class="draggable" draggable="true" data-type="detritivore" onclick="handleTouchSelect(this)">Earthworm 🪱</div>
+                    <div class="draggable" draggable="true" data-type="saprotroph" onclick="handleTouchSelect(this)">Mushroom 🍄</div>
+                    <div class="draggable" draggable="true" data-type="detritivore" onclick="handleTouchSelect(this)">Woodlouse 🐞</div>
+                    <div class="draggable" draggable="true" data-type="saprotroph" onclick="handleTouchSelect(this)">Bacteria 🦠</div>
+                </div>
+
+                <div class="drop-zones-wrapper">
+                    <div class="drop-zone" id="zone-ingest" onclick="handleTouchDrop(this)">
+                        <h4 style="color: #d84315;">Ingest First<br>(Detritivore)</h4>
+                    </div>
+                    <div class="drop-zone" id="zone-digest" onclick="handleTouchDrop(this)">
+                        <h4 style="color: #1565c0;">Digest First<br>(Saprotroph)</h4>
+                    </div>
+                </div>
+                <p id="gameMsg" style="margin-top:10px; color: #d84315; font-weight:bold; display:none;"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: STUDY GUIDE -->
+    <section id="study-guide">
+        <h2>📚 4. Study Guide (Exam Prep)</h2>
+        <p><em>Click/Tap the questions below to reveal the full answers.</em></p>
+        
+        <h3 style="background:var(--tint-purple)">Short Answer Questions</h3>
+        
+        <details>
+            <summary>1. Define Ecology.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Ecology is the study of living organisms, their interactions with each other, and their interactions with their non-living environment.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> Ecology, derived from the Greek words 'oikos' (house or habitat) and 'logos' (study), is the scientific discipline dedicated to understanding the intricate relationships between organisms and their surroundings. This involves examining how different species interact with one another (e.g., predation, competition, symbiosis) and how these organisms are influenced by and, in turn, influence the non-living components of their environment, such as sunlight, water, soil, and temperature. Essentially, it's the comprehensive study of the household of nature.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>2. What is an ecosystem?</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> An ecosystem is a functional unit where a community of living organisms (biotic components) interacts with its non-living environment (abiotic components).</div>
+                <div class="long-ans"><strong>Long Answer:</strong> An ecosystem represents a self-sustaining system formed by the interplay of living (biotic) organisms and their non-living (abiotic) physical and chemical surroundings. It is a fundamental unit in ecology, encompassing all the plants, animals, and microorganisms in a given area, alongside environmental factors like sunlight, water, minerals, and temperature. These components are interconnected through nutrient cycles and energy flows, forming a dynamic web of relationships where each part influences the others, leading to a balanced and functioning natural unit.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>3. Give two examples of ecosystems at different scales.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> A person's mouth (micro-scale) and a large forest (macro-scale).</div>
+                <div class="long-ans"><strong>Long Answer:</strong> Ecosystems demonstrate remarkable variability in size and scope. At a micro-scale, a compelling example is a person's mouth, which harbors a diverse community of bacteria, fungi, and other microorganisms interacting with the oral environment (saliva, food particles, temperature, pH). This tiny environment constitutes a functioning ecosystem. Conversely, a large-scale example would be a vast forest, like the Amazon Rainforest, where millions of species of plants and animals interact with the extensive soil, water bodies, atmosphere, and climatic conditions across a massive geographical area.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>4. List the ecological levels of organization from organism to biosphere.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Organism → Species → Population → Community → Ecosystem → Biosphere.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> The ecological levels of organization represent a hierarchical structure that helps ecologists study life from individual units to the entire living planet. Starting from the individual and expanding outwards, these levels are: an <strong>Organism</strong> (an individual living being), a <strong>Species</strong> (a group of organisms capable of interbreeding), a <strong>Population</strong> (a group of individuals of the same species in a specific area), a <strong>Community</strong> (all the populations of different species interacting in an area), an <strong>Ecosystem</strong> (the community plus its abiotic environment), and finally, the <strong>Biosphere</strong> (the sum of all ecosystems on Earth).</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>5. Differentiate between a species and a population.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> A species is a group of interbreeding organisms that produce fertile offspring, while a population is a group of individuals <em>of the same species</em> in a specific area and time.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> The distinction between a species and a population is fundamental in ecology. A <strong>species</strong> refers to a group of organisms that are capable of interbreeding with one another in nature and produce fertile offspring. This definition emphasizes genetic isolation and reproductive potential. A <strong>population</strong>, on the other hand, is a more localized concept. It specifically refers to a group of individuals <em>belonging to the same species</em> that live in a particular geographical area at the same time and are capable of freely interbreeding. The key difference is that 'species' defines a broader biological category based on reproductive isolation, while 'population' defines a localized, interbreeding group within that species.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>6. What is a community in an ecological context?</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> An ecological community is all the populations of different species living and interacting within a given ecosystem.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> In an ecological context, a <strong>community</strong> refers to the assemblage of all the different populations of various species that live together and interact within a defined geographical area or ecosystem. It's not just a collection of organisms, but rather a dynamic web of relationships involving competition, predation, mutualism, and other interspecific interactions. For instance, a forest community might include populations of oak trees, deer, squirrels, various bird species, insects, fungi, and bacteria. The interactions among these diverse populations are what define the community structure and function.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>7. Define habitat.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Habitat is the natural environment or specific place where an organism normally lives.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> A <strong>habitat</strong> is the natural environment or specific type of place where an organism or a population typically lives. It encompasses all the physical and biological resources present in an area that are necessary for an organism's survival, growth, and reproduction. This includes elements like climate, topography, vegetation, water availability, and the presence of other species. For example, the habitat of a polar bear is the Arctic region, while the habitat of a desert cactus is an arid sandy environment.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>8. List the two main components of an ecosystem.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Biotic (living) and Abiotic (non-living) components.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> Every ecosystem, regardless of its size or type, is fundamentally composed of two main categories of components that interact dynamically to sustain life. These are the <strong>biotic components</strong>, which encompass all the living or once-living organisms within the system, and the <strong>abiotic components</strong>, which include all the non-living physical and chemical factors that influence these organisms. Both are indispensable for the functioning and stability of the ecosystem.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>9. Give three examples of abiotic factors.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Sunlight, water, and soil.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> Abiotic factors are the non-living chemical and physical parts of the environment that affect living organisms and the functioning of ecosystems. Three common examples include: <strong>Sunlight</strong>, which is the primary energy source for most ecosystems through photosynthesis; <strong>Water</strong>, an essential medium for all life processes and a key component of living tissues; and <strong>Soil</strong>, which provides structural support for plants, stores nutrients, and harbors countless microorganisms, influencing what can grow in a particular area.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>10. What is the difference between macro-nutrients and micro-nutrients?</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Macro-nutrients are required in large quantities by organisms, while micro-nutrients are needed in small quantities but are still essential.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> In the context of abiotic nutrients, <strong>macro-nutrients</strong> are elements that plants and animals require in relatively large quantities for their growth, development, and overall physiological functions. Examples include Nitrogen (N), Phosphorus (P), and Potassium (K). Conversely, <strong>micro-nutrients</strong> are elements that are also essential for life, but are needed only in very small or trace amounts. Examples include Boron (B), Iron (Fe), and Zinc (Zn). A deficiency in either macro or micro-nutrients can severely impact an organism's health and an ecosystem's productivity.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>11. Define primary producers and give an example.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Primary producers (autotrophs) are organisms that create their own food from inorganic sources, typically through photosynthesis; e.g., green plants.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> <strong>Primary producers</strong>, also known as autotrophs, are organisms that form the base of almost all ecosystems. Their unique ability lies in synthesizing their own complex, energy-rich organic molecules (food) from simple inorganic substances. The most common method for this is <strong>photosynthesis</strong>, where they use sunlight, carbon dioxide, and water to produce sugars and oxygen. An excellent example is a <strong>green plant</strong>, such as a forest tree or a patch of grass, which captures solar energy to fuel its growth.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>12. What are heterotrophs?</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Heterotrophs (consumers) are organisms that obtain energy and nutrients by consuming other organisms or organic matter.</div>
+                <div class="long-ans"><strong>Long Answer:</strong> <strong>Heterotrophs</strong>, also known as consumers, are organisms that cannot produce their own food. Instead, they must obtain complex, energy-rich organic compounds by consuming other organisms or their organic by-products. This means they rely, directly or indirectly, on the energy fixed by primary producers. Heterotrophs encompass a wide range of organisms, from herbivores that eat plants, to carnivores that eat other animals, to omnivores that eat both, and decomposers that break down dead organic matter.</div>
+            </div>
+        </details>
+
+        <details>
+            <summary>13. Distinguish between detritivores and saprotrophs.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Detritivores <em>ingest</em> dead organic matter then digest it (e.g., earthworms), while saprotrophs <em>secrete enzymes externally</em> to digest dead matter and then absorb the nutrients (e.g., fungi).</div>
+                <div class="long-ans"><strong>Long Answer:</strong> Detritivores and saprotrophs are both crucial types of micro-consumers (decomposers) that break down dead organic material, but they differ in their feeding mechanisms. <strong>Detritivores</strong> are heterotrophic organisms that <em>ingest</em> dead organic matter, or detritus, into their bodies and then digest it internally. Examples include earthworms, woodlice, and many types of scavenger insects. In contrast, <strong>saprotrophs</strong> are heterotrophic organisms that obtain their nutrients by <em>secreting digestive enzymes externally</em> onto dead organic matter. These enzymes break down the complex organic molecules into simpler soluble compounds, which the saprotroph then absorbs. Fungi and bacteria are the primary examples of saprotrophs.</div>
+            </div>
+        </details>
+
+        <h3 style="background:var(--tint-purple)">Long Answer Questions</h3>
+
+        <!-- LQ1 -->
+        <details>
+            <summary>1. Explain the concept of ecology, detailing its Greek origin and what it encompasses. Provide examples of how living organisms interact with both other living organisms and their non-living environment.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Ecology is the study of organism-environment interactions, derived from Greek 'oikos' (habitat) + 'logos' (study), covering biotic-biotic and biotic-abiotic relationships.</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong> The term "ecology" originates from the Greek words "oikos," meaning "house" or "habitat," and "logos," meaning "study." Therefore, ecology literally translates to the "study of the household of nature." It is a comprehensive scientific discipline that investigates the distribution and abundance of organisms, and how these are determined by the interactions between organisms themselves and between organisms and their environment.<br><br>
+                    <strong>Interactions with other living organisms (Biotic-Biotic):</strong> These relationships are diverse and crucial for ecosystem functioning. Examples include:
+                    <ul>
+                        <li><em>Predation:</em> A lion hunting a zebra. The lion benefits by obtaining food, while the zebra is harmed. This controls prey populations.</li>
+                        <li><em>Competition:</em> Two species of plants vying for the same sunlight, water, or soil nutrients in a forest. Both are negatively affected to some extent.</li>
+                        <li><em>Symbiosis:</em> A mutually beneficial relationship, like bees pollinating flowers. The bees get nectar, and the flowers get pollinated, ensuring reproduction.</li>
+                        <li><em>Parasitism:</em> Ticks feeding on a dog. The tick benefits, while the dog is harmed.</li>
+                    </ul>
+                    <strong>Interactions with their non-living environment (Biotic-Abiotic):</strong> Organisms are constantly influenced by and adapt to their physical and chemical surroundings. Examples include:
+                    <ul>
+                        <li><em>Plants and Sunlight:</em> Plants utilize sunlight for photosynthesis, converting light energy into chemical energy. The availability of sunlight dictates plant growth and distribution.</li>
+                        <li><em>Animals and Temperature:</em> Cold-blooded animals like lizards bask in the sun to regulate their body temperature, demonstrating a direct interaction with ambient temperature.</li>
+                        <li><em>Organisms and Water:</em> All living things require water for survival. Fish are entirely dependent on an aquatic environment, while desert animals have adapted physiological mechanisms to conserve water in arid conditions.</li>
+                        <li><em>Microorganisms and Soil:</em> Bacteria and fungi in the soil decompose organic matter, releasing nutrients back into the soil, thus influencing its composition and fertility for plant growth.</li>
+                    </ul>
+                    Ecology thus provides a holistic view of life on Earth, revealing the intricate web of interdependencies that maintain natural balances.
+                </div>
+            </div>
+        </details>
+
+        <!-- LQ2 -->
+        <details>
+            <summary>2. Discuss the diverse scales at which ecosystems exist, providing specific examples for each scale to illustrate their variability.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Ecosystems exist across micro to global scales, exemplified by a person's mouth (micro), a pond (meso), a forest (macro), and the entire biosphere (global).</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong> Ecosystems are not confined to a single size but manifest across a remarkable spectrum of scales, from the incredibly small to the truly immense. This variability highlights the pervasive nature of ecological interactions.
+                    <br><br>
+                    <strong>Micro-Scale Ecosystems:</strong> These are tiny, often hidden, but fully functional systems.
+                    <br><em>Example: A drop of pond water.</em> Within a single drop of water, numerous microorganisms like amoebas, paramecia, and various bacteria interact with dissolved oxygen, nutrients, and the water itself. They feed, reproduce, and affect their microscopic environment.
+                    <br><em>Example: A person's digestive tract.</em> Billions of bacteria and other microbes form a complex ecosystem within the human gut, playing vital roles in digestion, vitamin synthesis, and immunity, all interacting with the host's internal environment.
+                    <br><br>
+                    <strong>Meso-Scale Ecosystems:</strong> These are more readily observable and are of intermediate size.
+                    <br><em>Example: A single tree.</em> A tree can be considered an ecosystem, housing insects, birds, fungi, lichens, and epiphytes, all interacting with each other and with the tree itself, as well as atmospheric conditions.
+                    <br><em>Example: A pond or a small lake.</em> This encompasses aquatic plants, fish, insects, amphibians, and various microorganisms, interacting with the water, sediment, sunlight, and dissolved gases. They form food webs and nutrient cycles contained within the pond's boundaries.
+                    <br><br>
+                    <strong>Macro-Scale Ecosystems:</strong> These are large, extensive geographical areas defined by their dominant vegetation and climate.
+                    <br><em>Example: A forest.</em> A forest biome, such as a temperate deciduous forest or a tropical rainforest, covers vast areas. It includes diverse flora and fauna, interacting with the regional climate, soil types, and hydrological patterns.
+                    <br><em>Example: A desert.</em> Deserts, characterized by extreme aridity, support specialized plant and animal communities that have adapted to sparse water resources and high temperatures, covering hundreds of thousands of square kilometers.
+                    <br><br>
+                    <strong>Global-Scale Ecosystem (The Biosphere):</strong> The largest possible ecological scale.
+                    <br><em>Example: The entire Earth's biosphere.</em> This encompasses all ecosystems on Earth, including terrestrial, aquatic, and atmospheric zones where life exists. All regional ecosystems are interconnected, influencing global climate patterns, biogeochemical cycles (like the carbon and water cycles), and ultimately, the sustainability of life on the planet. Changes in one large ecosystem can have ripple effects throughout the biosphere.
+                    <br><br>This multi-scalar existence of ecosystems underscores the interconnectedness of life and environment at every conceivable level.
+                </div>
+            </div>
+        </details>
+
+        <!-- LQ3 -->
+        <details>
+            <summary>3. Explain the levels of ecological organization, starting from an individual organism and building up to the biosphere. Provide clear definitions and examples for each level.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Ecological organization escalates from organism (individual) to species (interbreeding group), population (same species, same place/time), community (multiple interacting populations), ecosystem (community + abiotic factors), and finally, the biosphere (all Earth's ecosystems).</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong> The study of ecology often employs a hierarchical approach, organizing life into increasingly complex levels to understand interactions at different scales.
+                    <br><br>
+                    1. <strong>Organism:</strong> This is the most fundamental level, referring to a single, individual living being. Each organism carries out life functions independently.
+                    <br><em>Definition:</em> An individual living entity.
+                    <br><em>Example:</em> A single deer, a solitary oak tree, one bacterium.
+                    <br><br>
+                    2. <strong>Species:</strong> A group of similar organisms that can interbreed in nature to produce fertile offspring. This level emphasizes reproductive isolation from other groups.
+                    <br><em>Definition:</em> A group of organisms capable of interbreeding and producing fertile offspring.
+                    <br><em>Example:</em> All white-tailed deer (<em>Odocoileus virginianus</em>) worldwide; all common oak trees (<em>Quercus robur</em>).
+                    <br><br>
+                    3. <strong>Population:</strong> A group of individuals of the <em>same species</em> living in the <em>same geographical area</em> at the <em>same time</em> and capable of interbreeding.
+                    <br><em>Definition:</em> A localized group of individuals of the same species capable of interbreeding.
+                    <br><em>Example:</em> All white-tailed deer living in a specific national park in 2023; all oak trees in a particular forest stand.
+                    <br><br>
+                    4. <strong>Community:</strong> This level comprises all the <em>different populations</em> (of different species) that live and interact within a specific area or ecosystem. These interactions form complex webs of relationships.
+                    <br><em>Definition:</em> All the populations of different species living and interacting in a particular area.
+                    <br><em>Example:</em> The collection of deer, oak trees, squirrels, rabbits, various insects, and birds living together in a forest.
+                    <br><br>
+                    5. <strong>Ecosystem:</strong> An ecosystem includes the biotic community (all living organisms) along with the <em>abiotic</em> (non-living) components of their environment, such as sunlight, water, soil, minerals, and temperature. It is a functional unit where energy flows and nutrients cycle.
+                    <br><em>Definition:</em> A community of living organisms interacting with their non-living physical and chemical environment.
+                    <br><em>Example:</em> A forest, including all the animals, plants, and microorganisms, plus the soil, air, water, and sunlight that affect them; a pond with its aquatic life and water quality.
+                    <br><br>
+                    6. <strong>Biosphere:</strong> This is the largest and most inclusive ecological level, encompassing all the ecosystems on Earth. It represents the sum of all places where life exists, including the land, water, and atmosphere.
+                    <br><em>Definition:</em> The sum total of all ecosystems on Earth, representing the global ecological system.
+                    <br><em>Example:</em> The entire planet Earth, including all oceans, landmasses, and the lower atmosphere where organisms reside.
+                    <br><br>Each level builds upon the previous one, demonstrating increasing complexity and scope of interactions, allowing ecologists to study biological processes from the individual to the global scale.
+                </div>
+            </div>
+        </details>
+
+        <!-- LQ4 -->
+        <details>
+            <summary>4. Describe in detail the abiotic and biotic components of an ecosystem. For each component, provide specific examples and explain their role in the ecosystem's functioning.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Ecosystems consist of abiotic (non-living like sunlight, water, soil) and biotic (living like producers, consumers, decomposers) components, all interacting to facilitate energy flow and nutrient cycling.</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong> An ecosystem is a complex, dynamic system comprising two fundamental categories of components that are intimately interconnected and essential for its functioning:
+                    <br><br>
+                    <strong>A. Abiotic Components (Non-living Factors):</strong> These are the physical and chemical elements of the environment that influence the organisms within the ecosystem. Their availability and characteristics dictate the types of life that can thrive.
+                    <ul>
+                        <li><strong>1. Water:</strong> Absolutely vital for all life. Organisms are typically 50-95% water, and it acts as a solvent, a medium for transport, and is crucial for all biochemical reactions. In aquatic ecosystems, water is the habitat itself.
+                            <br><em>Role:</em> Medium for life, reactant in photosynthesis, regulates temperature, transports nutrients.
+                            <br><em>Example:</em> Rainfall sustains terrestrial plants; ocean currents distribute marine life.
+                        </li>
+                        <li><strong>2. Soil:</strong> The uppermost layer of Earth's crust, composed of minerals, organic matter, water, and air. Its type, pH, and nutrient content determine plant distribution.
+                            <br><em>Role:</em> Provides physical support for plants, stores and supplies nutrients and water, habitat for decomposers.
+                            <br><em>Example:</em> Loamy soil supports diverse forests; sandy soil in deserts restricts plant growth to drought-tolerant species.
+                        </li>
+                        <li><strong>3. Nutrients:</strong> Chemical elements required by organisms for growth and metabolism.
+                            <br><strong>Macro-nutrients:</strong> Needed in large amounts (e.g., Nitrogen for proteins, Phosphorus for DNA, Potassium for enzyme function, Calcium for cell walls).
+                            <br><strong>Micro-nutrients:</strong> Needed in small amounts (e.g., Iron for chlorophyll, Zinc for enzyme activation, Boron for cell division).
+                            <br><strong>Organic Nutrients:</strong> Humus (decomposed organic matter in soil) improves soil structure and nutrient retention.
+                            <br><em>Role:</em> Building blocks for organic molecules, facilitators of biochemical reactions.
+                            <br><em>Example:</em> Fertilizers supply N, P, K to crops; trace elements like Iodine are essential for animal thyroid function.
+                        </li>
+                        <li><strong>4. Physical Environmental Components:</strong>
+                            <br><strong>Light:</strong> Solar radiation, the ultimate energy source for most ecosystems. <em>Role:</em> Drives photosynthesis in producers; influences daily/seasonal rhythms of organisms. <em>Example:</em> Dense forest canopies limit light reaching the forest floor.
+                            <br><strong>Temperature:</strong> The degree of hotness or coldness. <em>Role:</em> Affects metabolic rates, enzyme activity, and species distribution (e.g., tropical species cannot tolerate freezing). <em>Example:</em> Desert animals adapt to extreme daily temperature fluctuations.
+                        </li>
+                    </ul>
+                    <strong>B. Biotic Components (Living Factors):</strong> These are all the living organisms within the ecosystem, categorized by their roles in energy flow.
+                    <ul>
+                        <li><strong>1. Primary Producers (Autotrophs):</strong> Organisms that produce their own food, primarily through photosynthesis, converting light energy into chemical energy. They form the base of the food web.
+                            <br><em>Role:</em> Energy fixation, converting inorganic matter into organic matter.
+                            <br><em>Example:</em> Green plants (trees, grasses), algae, cyanobacteria.
+                        </li>
+                        <li><strong>2. Consumers (Heterotrophs):</strong> Organisms that obtain energy by consuming other organisms.
+                            <br><strong>Macro-consumers:</strong> Large organisms that ingest other living organisms or their parts.
+                            <br><em>Herbivores (Primary Consumers):</em> Feed directly on producers. <em>Example:</em> Deer eating leaves, rabbits eating grass.
+                            <br><em>Carnivores (Secondary/Tertiary Consumers):</em> Feed on other animals. <em>Example:</em> Wolves eating deer (secondary), eagles eating snakes (tertiary).
+                            <br><em>Omnivores:</em> Feed on both plants and animals. <em>Example:</em> Humans, bears.
+                            <br><em>Role:</em> Transfer energy and nutrients from lower to higher trophic levels.
+                        </li>
+                        <li><strong>3. Micro-consumers (Decomposers):</strong> Organisms that break down dead organic matter (detritus).
+                            <br><strong>Detritivores:</strong> Ingest detritus and digest it internally. <em>Example:</em> Earthworms, millipedes, crabs.
+                            <br><strong>Saprotrophs:</strong> Secrete digestive enzymes externally onto dead organic matter and then absorb the digested nutrients. <em>Example:</em> Fungi, bacteria.
+                            <br><em>Role:</em> Nutrient recycling, breaking down complex organic molecules into simpler inorganic substances that can be reused by producers. Without them, nutrients would remain locked in dead biomass.
+                        </li>
+                    </ul>
+                    The intricate interactions between these abiotic and biotic components—from a plant absorbing nutrients from the soil under sunlight, to an animal consuming the plant, and decomposers recycling the dead remains—create the dynamic and self-sustaining nature of an ecosystem.
+                </div>
+            </div>
+        </details>
+
+        <!-- LQ5 -->
+        <details>
+            <summary>5. Explain the different types of consumers within an ecosystem, categorizing them by their feeding methods (macro-consumers and micro-consumers) and trophic levels. Provide examples for each category.</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Consumers (heterotrophs) are macro-consumers (herbivores, carnivores, omnivores) or micro-consumers (detritivores, saprotrophs), occupying primary, secondary, or tertiary trophic levels based on what they eat.</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong> Consumers, or heterotrophs, are vital biotic components of an ecosystem that obtain their energy and nutrients by feeding on other organisms or their organic remains. They are broadly categorized based on their size and method of consumption, and also by their position in the food chain, known as trophic levels.
+                    <br><br>
+                    <strong>I. Categorization by Feeding Methods:</strong>
+                    <br><br>
+                    <strong>A. Macro-consumers (Phagotrophs):</strong> These are typically larger organisms that ingest solid organic matter, usually living or recently killed organisms. They are further classified by their diet:
+                    <ul>
+                        <li><strong>1. Herbivores (Primary Consumers):</strong>
+                            <br><strong>Diet:</strong> Feed directly on primary producers (plants, algae).
+                            <br><strong>Trophic Level:</strong> Occupy the <strong>second trophic level</strong> (first consumer level).
+                            <br><strong>Examples:</strong> Deer, cows, rabbits, grasshoppers, zooplankton.
+                        </li>
+                        <li><strong>2. Carnivores:</strong> Feed on other animals. They are further divided based on what they eat:
+                            <br><em>Secondary Consumers:</em>
+                            <br><strong>Diet:</strong> Feed on herbivores (primary consumers).
+                            <br><strong>Trophic Level:</strong> Occupy the <strong>third trophic level</strong>.
+                            <br><strong>Examples:</strong> Foxes eating rabbits, small fish eating zooplankton, many bird species eating insects.
+                            <br><em>Tertiary Consumers:</em>
+                            <br><strong>Diet:</strong> Feed on secondary consumers.
+                            <br><strong>Trophic Level:</strong> Occupy the <strong>fourth trophic level</strong>.
+                            <br><strong>Examples:</strong> Owls eating snakes (which ate rodents), large fish eating smaller predatory fish, wolves eating foxes.
+                            <br><em>Quaternary Consumers (sometimes):</em>
+                            <br><strong>Diet:</strong> Feed on tertiary consumers.
+                            <br><strong>Trophic Level:</strong> Occupy the <strong>fifth trophic level</strong>.
+                            <br><strong>Examples:</strong> Orcas eating seals (which ate fish), large predatory birds.
+                        </li>
+                        <li><strong>3. Omnivores:</strong>
+                            <br><strong>Diet:</strong> Consume both plants and animals.
+                            <br><strong>Trophic Level:</strong> Can occupy multiple trophic levels (second, third, fourth) depending on what they are eating at any given time.
+                            <br><strong>Examples:</strong> Humans, bears, raccoons, chickens.
+                        </li>
+                    </ul>
+                    <strong>B. Micro-consumers (Decomposers / Saprotrophs & Detritivores):</strong> These are typically smaller organisms (often microorganisms) or invertebrates that obtain nutrients by breaking down dead organic matter. They are crucial for nutrient recycling.
+                    <ul>
+                        <li><strong>1. Detritivores:</strong>
+                            <br><strong>Feeding Method:</strong> Ingest (eat) dead organic material (detritus) into their bodies and then digest it internally. They consume macroscopic fragments of decaying material.
+                            <br><strong>Trophic Level:</strong> Technically, they operate across all trophic levels by consuming dead organisms from any level.
+                            <br><strong>Examples:</strong> Earthworms, woodlice, millipedes, dung beetles, vultures (as scavengers).
+                        </li>
+                        <li><strong>2. Saprotrophs:</strong>
+                            <br><strong>Feeding Method:</strong> Secrete digestive enzymes externally onto dead organic matter. These enzymes break down complex organic molecules into simpler, soluble compounds, which the saprotroph then absorbs.
+                            <br><strong>Trophic Level:</strong> Similar to detritivores, they process organic matter from all trophic levels.
+                            <br><strong>Examples:</strong> Fungi (e.g., mushrooms), bacteria.
+                        </li>
+                    </ul>
+                    In summary, consumers are diverse, ranging from large herbivores munching on plants to microscopic bacteria dissolving dead matter. Their collective actions ensure that energy flows through the ecosystem and that vital nutrients are continuously recycled, making them indispensable for ecosystem health and stability.
+                </div>
+            </div>
+        </details>
+
+        <!-- LQ6 -->
+        <details>
+            <summary>6. Discuss the critical role of decomposers in nutrient cycling within an ecosystem. How do detritivores and saprotrophs contribute to this process?</summary>
+            <div class="answer-content">
+                <div class="short-ans"><strong>Short Answer:</strong> Decomposers (detritivores and saprotrophs) are crucial for nutrient cycling by breaking down dead organic matter, returning essential inorganic nutrients to the soil/water for producers.</div>
+                <div class="long-ans">
+                    <strong>Long Answer:</strong> Decomposers play an absolutely critical and indispensable role in the functioning of any ecosystem, primarily by facilitating <strong>nutrient cycling</strong>. Without them, the vast amount of organic matter from dead organisms and waste products would accumulate indefinitely, locking away essential nutrients and preventing their reuse by new life.
+                    <br>The primary function of decomposers is to break down complex organic molecules found in dead plants, animals, and their waste products into simpler inorganic substances. These inorganic nutrients (like nitrates, phosphates, and carbon dioxide) are then released back into the soil, water, and atmosphere, making them available for uptake by primary producers (plants and algae) to begin the food chain anew. This continuous recycling process is what makes nutrients finite resources that are used over and over again, rather than being consumed and lost.
+                    <br><br>
+                    The two main types of decomposers, detritivores and saprotrophs, contribute to this process through distinct but complementary mechanisms:
+                    <br><br>
+                    <strong>Detritivores' Contribution:</strong>
+                    <ul>
+                        <li><strong>Mechanical Breakdown:</strong> Detritivores initiate the decomposition process by physically breaking down large pieces of dead organic matter (detritus) into smaller fragments. This process, called <strong>fragmentation</strong>, increases the surface area of the detritus, making it more accessible for microbial action.</li>
+                        <li><strong>Ingestion and Internal Digestion:</strong> By ingesting the detritus, detritivores process it through their digestive systems. This further breaks down organic compounds and releases some nutrients. Their feces, which are often rich in partially decomposed organic matter and microbial populations, become another form of detritus that can be readily attacked by saprotrophs.</li>
+                        <li><strong>Aeration:</strong> Organisms like earthworms burrow through soil, creating channels that improve soil aeration and drainage. This is beneficial for aerobic saprotrophs (bacteria and fungi) that require oxygen for efficient decomposition.</li>
+                        <li><strong>Examples:</strong> Earthworms eat dead leaves, breaking them into smaller pieces and mixing them into the soil. Millipedes and woodlice chew decaying wood and plant material. Vultures and carrion beetles consume dead animals, preventing large carcasses from accumulating.</li>
+                    </ul>
+                    <strong>Saprotrophs' Contribution:</strong>
+                    <ul>
+                        <li><strong>Biochemical Decomposition:</strong> Saprotrophs, primarily bacteria and fungi, are the master chemists of decomposition. They perform the crucial step of breaking down complex organic macromolecules (like cellulose, lignin, proteins) into their simpler constituent inorganic compounds. They do this by secreting powerful extracellular enzymes onto the dead organic material.</li>
+                        <li><strong>Nutrient Mineralization:</strong> This enzymatic breakdown leads to <strong>mineralization</strong>, where organic forms of nutrients are converted into inorganic mineral forms. For example, proteins are broken down into amino acids, and then to ammonia, which is subsequently converted to nitrates by other bacteria, making nitrogen available to plants.</li>
+                        <li><strong>Final Recycling:</strong> They complete the cycle by returning essential elements like carbon (as CO₂), nitrogen (as nitrates), phosphorus (as phosphates), and sulfur (as sulfates) to the abiotic environment in forms that can be absorbed and utilized by producers.</li>
+                        <li><strong>Examples:</strong> Various species of fungi grow on decaying wood, breaking down lignin and cellulose. Bacteria in the soil break down virtually all types of organic matter, converting it into inorganic nutrients.</li>
+                    </ul>
+                    In essence, detritivores act as the initial processors, fragmenting and mixing the organic matter, while saprotrophs perform the crucial biochemical conversion, mineralizing the nutrients. Together, they ensure that the limited supply of essential nutrients on Earth is continuously recycled, supporting the growth of new life and maintaining the productivity and health of ecosystems. Without decomposers, ecosystems would essentially grind to a halt as nutrients would become permanently locked in dead biomass.
+                </div>
+            </div>
+        </details>
+    </section>
+
+</div>
+
+<script>
+    // --- THEME & ANIMATION ENGINE ---
+    const canvas = document.getElementById('rain-canvas');
+    const ctx = canvas.getContext('2d');
+    let rainAnimationFrame;
+    let raindrops = [];
+
+    // Resize canvas
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function setTheme(theme) {
+        document.body.className = theme;
+        
+        // Handle Rain Effect (Only for Forest)
+        if (theme === 'theme-forest') {
+            canvas.style.display = 'block';
+            startRain();
+        } else {
+            canvas.style.display = 'none';
+            stopRain();
+        }
+    }
+
+    // --- RAIN ENGINE ---
+    function createRaindrop() {
+        return {
+            x: Math.random() * canvas.width,
+            y: Math.random() * -100, // Start above screen
+            speed: Math.random() * 8 + 5,
+            length: Math.random() * 20 + 10,
+            opacity: Math.random() * 0.4 + 0.1
+        };
+    }
+
+    function initRain() {
+        raindrops = [];
+        for (let i = 0; i < 150; i++) {
+            raindrops.push(createRaindrop());
+            raindrops[i].y = Math.random() * canvas.height; 
+        }
+    }
+
+    function animateRain() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.lineCap = 'round';
+
+        for (let i = 0; i < raindrops.length; i++) {
+            let d = raindrops[i];
+            
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d.x, d.y + d.length);
+            ctx.stroke();
+
+            // Update position
+            d.y += d.speed;
+
+            // Reset if goes off screen
+            if (d.y > canvas.height) {
+                raindrops[i] = createRaindrop();
+            }
+        }
+        rainAnimationFrame = requestAnimationFrame(animateRain);
+    }
+
+    function startRain() {
+        if (!rainAnimationFrame) {
+            initRain();
+            animateRain();
+        }
+    }
+
+    function stopRain() {
+        if (rainAnimationFrame) {
+            cancelAnimationFrame(rainAnimationFrame);
+            rainAnimationFrame = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    // Start default
+    startRain(); 
+
+    // --- SLIDER LOGIC ---
+    const scaleSlider = document.getElementById('scaleSlider');
+    const scaleVisual = document.getElementById('scaleVisual');
+    const scaleText = document.getElementById('scaleText');
+    const scaleData = {
+        1: { text: "Micro: A Person's Mouth (Bacteria & Environment)", color: "linear-gradient(to right, #ff9a9e, #fecfef)" },
+        2: { text: "Meso: A Pond / Coke Can (Rainwater & Larvae)", color: "linear-gradient(to right, #a1c4fd, #c2e9fb)" },
+        3: { text: "Global: The Biosphere (Earth)", color: "linear-gradient(to right, #84fab0, #8fd3f4)" }
+    };
+
+    scaleVisual.style.background = scaleData[1].color;
+    scaleSlider.addEventListener('input', function() {
+        const val = this.value;
+        scaleVisual.style.background = scaleData[val].color;
+        scaleVisual.innerText = val == 1 ? "Micro" : val == 2 ? "Meso" : "Global";
+        scaleText.innerText = scaleData[val].text;
+    });
+
+    // --- HIERARCHY LOGIC ---
+    const circleDefs = {
+        'organism': "Organism: An individual living entity.",
+        'species': "Species: A group of organisms that can reproduce and produce fully fertile offspring.",
+        'population': "Population: A group of organisms of the same species which live in the same habitat at the same time.",
+        'community': "Community: All the populations of the different species living and interacting in the same ecosystem.",
+        'ecosystem': "Ecosystem: Community (Biotic) interacting with environment (Abiotic).",
+        'biosphere': "Biosphere: The global sum of all ecosystems on Earth."
+    };
+    function updateDefinition(level) {
+        document.getElementById('defBox').innerHTML = `<strong>${circleDefs[level]}</strong>`;
+        const circleColor = getComputedStyle(document.querySelector('.c-' + level)).background;
+        document.getElementById('defBox').style.borderLeftColor = "#333";
+    }
+
+    // --- GAME LOGIC ---
+    let selectedDraggable = null;
+    const draggables = document.querySelectorAll('.draggable');
+    const dropZones = document.querySelectorAll('.drop-zone');
+
+    // Desktop
+    draggables.forEach(d => {
+        d.addEventListener('dragstart', () => { d.classList.add('dragging'); selectedDraggable = d; });
+        d.addEventListener('dragend', () => d.classList.remove('dragging'));
+    });
+    dropZones.forEach(z => {
+        z.addEventListener('dragover', e => { e.preventDefault(); z.style.background = '#e3f2fd'; });
+        z.addEventListener('dragleave', () => z.style.background = 'rgba(255,255,255,0.5)');
+        z.addEventListener('drop', e => {
+            e.preventDefault();
+            z.style.background = 'rgba(255,255,255,0.5)';
+            const draggable = document.querySelector('.dragging');
+            checkDrop(z, draggable);
+        });
+    });
+
+    // Mobile
+    function handleTouchSelect(el) {
+        draggables.forEach(d => d.style.borderColor = 'transparent');
+        selectedDraggable = el;
+        el.style.borderColor = '#333';
+        document.getElementById('gameMsg').innerText = "Selected! Now tap a box.";
+        document.getElementById('gameMsg').style.display = "block";
+    }
+
+    function handleTouchDrop(zone) {
+        if(selectedDraggable) {
+            checkDrop(zone, selectedDraggable);
+            selectedDraggable.style.borderColor = 'transparent';
+            selectedDraggable = null;
+            document.getElementById('gameMsg').style.display = "none";
+        }
+    }
+
+    function checkDrop(zone, item) {
+        if(!item) return;
+        const type = item.getAttribute('data-type');
+        const correct = (zone.id === 'zone-ingest' && type === 'detritivore') || 
+                        (zone.id === 'zone-digest' && type === 'saprotroph');
+        
+        if(correct) {
+            zone.appendChild(item);
+            item.style.background = '#c8e6c9';
+            item.innerText += " ✅";
+            item.removeAttribute('onclick');
+            item.setAttribute('draggable', 'false');
+            item.style.cursor = "default";
+        } else {
+            alert("Oops! Wrong category.");
+        }
+    }
+</script>
+
+</body>
+</html>
